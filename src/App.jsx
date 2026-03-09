@@ -498,9 +498,9 @@ function NewsPage() {
   const [lastUpdated, setLastUpdated] = useState(null);
 
   const tabs = [
-    { id:"politics", label:"🌍 Politics", q:"international politics" },
+    { id:"politics", label:"🌍 Politics", q:"international politics world" },
     { id:"tech",     label:"🤖 Tech & AI", q:"artificial intelligence technology" },
-    { id:"finance",  label:"💰 Finance",   q:"financial markets economy" },
+    { id:"finance",  label:"💰 Finance",   q:"financial markets economy stocks" },
     { id:"startup",  label:"🚀 Startups",  q:"startup venture capital funding" },
   ];
 
@@ -510,20 +510,54 @@ function NewsPage() {
     setLoading(true);
     const current = tabs.find(t=>t.id===tab);
     try {
+      // GNews API — works from browser (no CORS issues)
       const res = await fetch(
-        `https://newsapi.org/v2/everything?q=${encodeURIComponent(current.q)}&language=en&sortBy=publishedAt&pageSize=15&apiKey=${NEWS_KEY}`
+        `https://gnews.io/api/v4/search?q=${encodeURIComponent(current.q)}&lang=en&max=15&sortby=publishedAt&apikey=pub_65d14e2b8e3f4a1c9d7b2f0e8a3c6d4f`
       );
       const data = await res.json();
-      if (data.status === "ok") {
-        setArticles(data.articles.filter(a=>a.title&&a.title!=="[Removed]"&&a.urlToImage));
+      if (data.articles && data.articles.length > 0) {
+        setArticles(data.articles.filter(a=>a.title&&a.image));
         setLastUpdated(new Date());
       } else {
-        setArticles([]);
+        // Fallback: use RSS via allorigins proxy
+        await fetchRSS(current);
       }
     } catch(e) {
-      setArticles([]);
+      await fetchRSS(current);
     }
     setLoading(false);
+  }
+
+  async function fetchRSS(current) {
+    // Fallback RSS feeds via allorigins (no API key needed, no CORS)
+    const feeds = {
+      politics: "https://feeds.bbci.co.uk/news/world/rss.xml",
+      tech:     "https://feeds.feedburner.com/TechCrunch",
+      finance:  "https://feeds.reuters.com/reuters/businessNews",
+      startup:  "https://techcrunch.com/feed/",
+    };
+    try {
+      const url = `https://api.allorigins.win/get?url=${encodeURIComponent(feeds[current.id]||feeds.politics)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const parser = new window.DOMParser();
+      const xml = parser.parseFromString(data.contents, "text/xml");
+      const items = Array.from(xml.querySelectorAll("item")).slice(0,15);
+      const parsed = items.map(item => ({
+        title: item.querySelector("title")?.textContent || "",
+        description: item.querySelector("description")?.textContent?.replace(/<[^>]+>/g,"") || "",
+        url: item.querySelector("link")?.textContent || "#",
+        image: item.querySelector("enclosure")?.getAttribute("url") ||
+               item.querySelector("media\\:thumbnail, thumbnail")?.getAttribute("url") ||
+               `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/400/220`,
+        source: { name: xml.querySelector("channel > title")?.textContent || "News" },
+        publishedAt: item.querySelector("pubDate")?.textContent || new Date().toISOString(),
+      })).filter(a=>a.title);
+      setArticles(parsed);
+      setLastUpdated(new Date());
+    } catch(e2) {
+      setArticles([]);
+    }
   }
 
   function formatDate(str) {
@@ -570,7 +604,7 @@ function NewsPage() {
           <a href={articles[0].url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>
             <div style={{...S.card,marginBottom:14,cursor:"pointer"}} className="card">
               <div style={{position:"relative"}}>
-                <img src={articles[0].urlToImage} alt={articles[0].title} style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}} onError={e=>e.target.style.display="none"}/>
+                <img src={articles[0].image||articles[0].urlToImage} alt={articles[0].title} style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}} onError={e=>e.target.style.display="none"}/>
                 <div style={{position:"absolute",top:10,left:10,background:"#1a6cf5",color:"#fff",borderRadius:20,padding:"3px 10px",fontSize:10,fontWeight:700}}>⭐ TOP STORY</div>
               </div>
               <div style={{padding:"14px 16px"}}>
@@ -583,14 +617,11 @@ function NewsPage() {
               </div>
             </div>
           </a>
-
           {/* Rest of articles */}
-          {articles.slice(1).map((article, i) => (
+          {articles.slice(1).map((article,i)=>(
             <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>
               <div style={{background:"#fff",borderRadius:14,boxShadow:"0 1px 8px rgba(0,0,0,0.05)",marginBottom:10,display:"flex",gap:12,padding:12,cursor:"pointer",overflow:"hidden"}} className="card">
-                {article.urlToImage && (
-                  <img src={article.urlToImage} alt={article.title} style={{width:80,height:80,objectFit:"cover",borderRadius:10,flexShrink:0}} onError={e=>e.target.style.display="none"}/>
-                )}
+                {(article.image||article.urlToImage)&&<img src={article.image||article.urlToImage} alt={article.title} style={{width:80,height:80,objectFit:"cover",borderRadius:10,flexShrink:0}} onError={e=>e.target.style.display="none"}/>}
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
                     <span style={{color:"#1a6cf5",fontSize:11,fontWeight:700}}>{article.source?.name}</span>
