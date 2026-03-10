@@ -529,35 +529,60 @@ function NewsPage() {
   }
 
   async function fetchRSS(current) {
-    // Fallback RSS feeds via allorigins (no API key needed, no CORS)
-    const feeds = {
-      politics: "https://feeds.bbci.co.uk/news/world/rss.xml",
-      tech:     "https://feeds.feedburner.com/TechCrunch",
-      finance:  "https://feeds.reuters.com/reuters/businessNews",
-      startup:  "https://techcrunch.com/feed/",
+    const feedMap = {
+      politics: [
+        "https://feeds.bbci.co.uk/news/world/rss.xml",
+        "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+      ],
+      tech: [
+        "https://feeds.feedburner.com/TechCrunch",
+        "https://www.wired.com/feed/rss",
+      ],
+      finance: [
+        "https://feeds.marketwatch.com/marketwatch/topstories/",
+        "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+        "https://www.cnbc.com/id/10000664/device/rss/rss.html",
+      ],
+      startup: [
+        "https://techcrunch.com/category/startups/feed/",
+        "https://feeds.feedburner.com/venturebeat/SZYF",
+        "https://www.entrepreneur.com/latest.rss",
+      ],
     };
-    try {
-      const url = `https://api.allorigins.win/get?url=${encodeURIComponent(feeds[current.id]||feeds.politics)}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const parser = new window.DOMParser();
-      const xml = parser.parseFromString(data.contents, "text/xml");
-      const items = Array.from(xml.querySelectorAll("item")).slice(0,15);
-      const parsed = items.map(item => ({
-        title: item.querySelector("title")?.textContent || "",
-        description: item.querySelector("description")?.textContent?.replace(/<[^>]+>/g,"") || "",
-        url: item.querySelector("link")?.textContent || "#",
-        image: item.querySelector("enclosure")?.getAttribute("url") ||
-               item.querySelector("media\\:thumbnail, thumbnail")?.getAttribute("url") ||
-               `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/400/220`,
-        source: { name: xml.querySelector("channel > title")?.textContent || "News" },
-        publishedAt: item.querySelector("pubDate")?.textContent || new Date().toISOString(),
-      })).filter(a=>a.title);
-      setArticles(parsed);
-      setLastUpdated(new Date());
-    } catch(e2) {
-      setArticles([]);
+    const feedList = feedMap[current.id] || feedMap.politics;
+    for (const feed of feedList) {
+      try {
+        const url = `https://api.allorigins.win/get?url=${encodeURIComponent(feed)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.contents) continue;
+        const parser = new window.DOMParser();
+        const xml = parser.parseFromString(data.contents, "text/xml");
+        const items = Array.from(xml.querySelectorAll("item")).slice(0,15);
+        if (items.length === 0) continue;
+        const sourceName = xml.querySelector("channel > title")?.textContent || "News";
+        const parsed = items.map((item,idx) => {
+          const encImg = item.querySelector("enclosure")?.getAttribute("url");
+          const descHtml = item.querySelector("description")?.textContent || "";
+          const imgMatch = descHtml.match(/<img[^>]+src=["'](https?:[^"\']+)["\']/);
+          const descImg = imgMatch ? imgMatch[1] : null;
+          return {
+            title: item.querySelector("title")?.textContent?.replace(/<!\[CDATA\[|\]\]>/g,"").trim() || "",
+            description: descHtml.replace(/<[^>]+>/g,"").trim(),
+            url: item.querySelector("link")?.textContent?.trim() || "#",
+            image: encImg || descImg || `https://picsum.photos/seed/${current.id}${idx}/400/220`,
+            source: { name: sourceName },
+            publishedAt: item.querySelector("pubDate")?.textContent || new Date().toISOString(),
+          };
+        }).filter(a => a.title && a.title.length > 5);
+        if (parsed.length > 0) {
+          setArticles(parsed);
+          setLastUpdated(new Date());
+          return;
+        }
+      } catch(e) { continue; }
     }
+    setArticles([]);
   }
 
   function formatDate(str) {
