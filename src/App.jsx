@@ -19,6 +19,77 @@ const ICONS = {
   "Cybersecurity":"🔒","Web3 & Crypto":"⛓️","Gaming":"🎮","FoodTech":"🍽️","SpaceTech":"🚀"
 };
 
+// ─── STYLES ───────────────────────────────────────────────────────────────────
+const S={
+  app:{fontFamily:"'DM Sans',sans-serif",background:"#fafafa",minHeight:"100vh",maxWidth:480,margin:"0 auto"},
+  splash:{height:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#fff"},
+  logoRow:{display:"flex",alignItems:"center",gap:8},
+  lm:{background:"#1a6cf5",color:"#fff",fontWeight:800,fontSize:20,width:38,height:38,borderRadius:11,display:"flex",alignItems:"center",justifyContent:"center"},
+  lt:{fontSize:26,fontWeight:800,color:"#0d1117",letterSpacing:"-0.5px"},
+  aWrap:{minHeight:"100vh",display:"flex",justifyContent:"center",alignItems:"flex-start",background:"#fafafa",padding:"32px 16px"},
+  aCard:{background:"#fff",borderRadius:20,padding:"28px 24px",width:"100%",maxWidth:400,boxShadow:"0 4px 30px rgba(0,0,0,0.07)",display:"flex",flexDirection:"column",gap:11},
+  aTitle:{margin:"4px 0 6px",fontSize:21,fontWeight:800,color:"#0d1117"},
+  aSwitch:{textAlign:"center",color:"#aaa",fontSize:13,margin:0},
+  inp:{border:"1.5px solid #e8edf5",borderRadius:12,padding:"11px 14px",fontSize:14,outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"'DM Sans',sans-serif",color:"#0d1117"},
+  btnP:{background:"#1a6cf5",color:"#fff",border:"none",borderRadius:12,padding:"13px 0",fontSize:15,fontWeight:700,cursor:"pointer",width:"100%",fontFamily:"'DM Sans',sans-serif"},
+  btnG:{background:"#fff",color:"#1a6cf5",border:"1.5px solid #1a6cf5",borderRadius:12,padding:"12px 0",fontSize:15,fontWeight:600,cursor:"pointer",width:"100%",fontFamily:"'DM Sans',sans-serif"},
+  lnk:{color:"#1a6cf5",cursor:"pointer",fontWeight:600},
+  rCard:{flex:1,border:"2px solid #e8edf5",borderRadius:16,padding:"18px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer"},
+  rCardOn:{border:"2px solid #1a6cf5",background:"#f0f5ff"},
+  indGrid:{display:"flex",flexWrap:"wrap",gap:7,maxHeight:220,overflowY:"auto"},
+  iChip:{background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"6px 11px",fontSize:12,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"},
+  iChipOn:{background:"#f0f5ff",border:"1.5px solid #1a6cf5",color:"#1a6cf5"},
+  vmCard:{flex:1,border:"2px solid #e8edf5",borderRadius:16,padding:"18px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer"},
+  vBox:{border:"2px dashed #e8edf5",borderRadius:14,padding:24,display:"flex",flexDirection:"column",alignItems:"center",cursor:"pointer",minHeight:110,justifyContent:"center"},
+  hdr:{position:"sticky",top:0,zIndex:100,background:"#fff",borderBottom:"1px solid #f0f0f0",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px"},
+  nBtn:{background:"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",padding:"5px 6px",borderRadius:10,gap:2,position:"relative"},
+  nBtnOn:{background:"#f0f5ff"},
+  badge:{position:"absolute",top:-2,right:-4,background:"#ff3b30",color:"#fff",fontSize:9,fontWeight:700,width:15,height:15,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"},
+  fBar:{display:"flex",gap:7,overflowX:"auto",padding:"10px 14px 8px",scrollbarWidth:"none"},
+  fChip:{background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"6px 12px",fontSize:12,cursor:"pointer",whiteSpace:"nowrap",fontWeight:500,fontFamily:"'DM Sans',sans-serif",flexShrink:0},
+  fChipOn:{background:"#1a6cf5",color:"#fff",border:"1.5px solid #1a6cf5"},
+  hint:{margin:"0 14px 10px",padding:"9px 13px",background:"#f0f5ff",borderRadius:11,fontSize:12,color:"#1a6cf5"},
+  card:{background:"#fff",borderRadius:18,boxShadow:"0 2px 14px rgba(0,0,0,0.06)",overflow:"hidden"},
+  playBtn:{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.18)",fontSize:40,color:"#fff"},
+  indBadge:{position:"absolute",top:10,left:10,background:"rgba(0,0,0,0.55)",color:"#fff",borderRadius:20,padding:"4px 10px",fontSize:11,backdropFilter:"blur(4px)"},
+  aBtn:{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:"#555",padding:"4px 6px",borderRadius:8,fontFamily:"'DM Sans',sans-serif"},
+  back:{background:"none",border:"none",cursor:"pointer",fontSize:15,fontWeight:700,color:"#1a6cf5",padding:"0 8px 0 0",display:"inline-block"},
+  secT:{fontSize:15,fontWeight:700,color:"#0d1117",margin:"0 0 10px"},
+  smBtn:{background:"#f0f5ff",color:"#1a6cf5",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",flexShrink:0},
+  toast:{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",color:"#fff",padding:"12px 24px",borderRadius:24,fontSize:14,fontWeight:600,zIndex:9999,boxShadow:"0 4px 20px rgba(0,0,0,0.25)",whiteSpace:"nowrap",transition:"background .3s"},
+};
+
+// ─── DARK MODE OVERRIDES ──────────────────────────────────────────────────────
+const DK={
+  app:{background:"#0d1117"},
+  hdr:{background:"#161b22",borderBottom:"1px solid #21262d"},
+  nBtnOn:{background:"#1c2333"},
+  card:{background:"#161b22",boxShadow:"0 2px 14px rgba(0,0,0,0.3)"},
+  inp:{background:"#1c2333",border:"1.5px solid #30363d",color:"#e0e0e0"},
+  text:{color:"#e0e0e0"},
+  subText:{color:"#8b949e"},
+  aCard:{background:"#161b22",boxShadow:"0 4px 30px rgba(0,0,0,0.4)"},
+  secBg:{background:"#161b22"},
+  fChip:{background:"#1c2333",border:"1.5px solid #30363d",color:"#8b949e"},
+};
+
+const CSS=`
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+  *{box-sizing:border-box;}body{margin:0;background:#fafafa;}
+  ::-webkit-scrollbar{width:0;height:0;}
+  .cp{cursor:pointer;}
+  .card{transition:box-shadow .2s;}.card:hover{box-shadow:0 6px 28px rgba(0,0,0,0.1)!important;}
+  .vmcard:hover{border-color:#1a6cf5!important;background:#f0f5ff;}
+  input:focus,textarea:focus{border-color:#1a6cf5!important;box-shadow:0 0 0 3px rgba(26,108,245,0.12);}
+  button:active{transform:scale(0.97);}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.2;}}
+  .spinner{width:28px;height:28px;border:3px solid #e8edf5;border-top-color:#1a6cf5;border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  a{text-decoration:none;color:inherit;}
+`;
+
+
+
 function timeAgo(ts) {
   const d = Date.now() - new Date(ts).getTime();
   if (d < 60000) return "just now";
@@ -998,72 +1069,3 @@ function InvestorDashboard({me,allUsers,messages,dark,setScreen,setChatTarget}) 
     </div>
   );
 }
-
-// ─── STYLES ───────────────────────────────────────────────────────────────────
-const S={
-  app:{fontFamily:"'DM Sans',sans-serif",background:"#fafafa",minHeight:"100vh",maxWidth:480,margin:"0 auto"},
-  splash:{height:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#fff"},
-  logoRow:{display:"flex",alignItems:"center",gap:8},
-  lm:{background:"#1a6cf5",color:"#fff",fontWeight:800,fontSize:20,width:38,height:38,borderRadius:11,display:"flex",alignItems:"center",justifyContent:"center"},
-  lt:{fontSize:26,fontWeight:800,color:"#0d1117",letterSpacing:"-0.5px"},
-  aWrap:{minHeight:"100vh",display:"flex",justifyContent:"center",alignItems:"flex-start",background:"#fafafa",padding:"32px 16px"},
-  aCard:{background:"#fff",borderRadius:20,padding:"28px 24px",width:"100%",maxWidth:400,boxShadow:"0 4px 30px rgba(0,0,0,0.07)",display:"flex",flexDirection:"column",gap:11},
-  aTitle:{margin:"4px 0 6px",fontSize:21,fontWeight:800,color:"#0d1117"},
-  aSwitch:{textAlign:"center",color:"#aaa",fontSize:13,margin:0},
-  inp:{border:"1.5px solid #e8edf5",borderRadius:12,padding:"11px 14px",fontSize:14,outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"'DM Sans',sans-serif",color:"#0d1117"},
-  btnP:{background:"#1a6cf5",color:"#fff",border:"none",borderRadius:12,padding:"13px 0",fontSize:15,fontWeight:700,cursor:"pointer",width:"100%",fontFamily:"'DM Sans',sans-serif"},
-  btnG:{background:"#fff",color:"#1a6cf5",border:"1.5px solid #1a6cf5",borderRadius:12,padding:"12px 0",fontSize:15,fontWeight:600,cursor:"pointer",width:"100%",fontFamily:"'DM Sans',sans-serif"},
-  lnk:{color:"#1a6cf5",cursor:"pointer",fontWeight:600},
-  rCard:{flex:1,border:"2px solid #e8edf5",borderRadius:16,padding:"18px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer"},
-  rCardOn:{border:"2px solid #1a6cf5",background:"#f0f5ff"},
-  indGrid:{display:"flex",flexWrap:"wrap",gap:7,maxHeight:220,overflowY:"auto"},
-  iChip:{background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"6px 11px",fontSize:12,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"},
-  iChipOn:{background:"#f0f5ff",border:"1.5px solid #1a6cf5",color:"#1a6cf5"},
-  vmCard:{flex:1,border:"2px solid #e8edf5",borderRadius:16,padding:"18px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer"},
-  vBox:{border:"2px dashed #e8edf5",borderRadius:14,padding:24,display:"flex",flexDirection:"column",alignItems:"center",cursor:"pointer",minHeight:110,justifyContent:"center"},
-  hdr:{position:"sticky",top:0,zIndex:100,background:"#fff",borderBottom:"1px solid #f0f0f0",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px"},
-  nBtn:{background:"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",padding:"5px 6px",borderRadius:10,gap:2,position:"relative"},
-  nBtnOn:{background:"#f0f5ff"},
-  badge:{position:"absolute",top:-2,right:-4,background:"#ff3b30",color:"#fff",fontSize:9,fontWeight:700,width:15,height:15,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"},
-  fBar:{display:"flex",gap:7,overflowX:"auto",padding:"10px 14px 8px",scrollbarWidth:"none"},
-  fChip:{background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"6px 12px",fontSize:12,cursor:"pointer",whiteSpace:"nowrap",fontWeight:500,fontFamily:"'DM Sans',sans-serif",flexShrink:0},
-  fChipOn:{background:"#1a6cf5",color:"#fff",border:"1.5px solid #1a6cf5"},
-  hint:{margin:"0 14px 10px",padding:"9px 13px",background:"#f0f5ff",borderRadius:11,fontSize:12,color:"#1a6cf5"},
-  card:{background:"#fff",borderRadius:18,boxShadow:"0 2px 14px rgba(0,0,0,0.06)",overflow:"hidden"},
-  playBtn:{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.18)",fontSize:40,color:"#fff"},
-  indBadge:{position:"absolute",top:10,left:10,background:"rgba(0,0,0,0.55)",color:"#fff",borderRadius:20,padding:"4px 10px",fontSize:11,backdropFilter:"blur(4px)"},
-  aBtn:{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:"#555",padding:"4px 6px",borderRadius:8,fontFamily:"'DM Sans',sans-serif"},
-  back:{background:"none",border:"none",cursor:"pointer",fontSize:15,fontWeight:700,color:"#1a6cf5",padding:"0 8px 0 0",display:"inline-block"},
-  secT:{fontSize:15,fontWeight:700,color:"#0d1117",margin:"0 0 10px"},
-  smBtn:{background:"#f0f5ff",color:"#1a6cf5",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",flexShrink:0},
-  toast:{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",color:"#fff",padding:"12px 24px",borderRadius:24,fontSize:14,fontWeight:600,zIndex:9999,boxShadow:"0 4px 20px rgba(0,0,0,0.25)",whiteSpace:"nowrap",transition:"background .3s"},
-};
-
-// ─── DARK MODE OVERRIDES ──────────────────────────────────────────────────────
-const DK={
-  app:{background:"#0d1117"},
-  hdr:{background:"#161b22",borderBottom:"1px solid #21262d"},
-  nBtnOn:{background:"#1c2333"},
-  card:{background:"#161b22",boxShadow:"0 2px 14px rgba(0,0,0,0.3)"},
-  inp:{background:"#1c2333",border:"1.5px solid #30363d",color:"#e0e0e0"},
-  text:{color:"#e0e0e0"},
-  subText:{color:"#8b949e"},
-  aCard:{background:"#161b22",boxShadow:"0 4px 30px rgba(0,0,0,0.4)"},
-  secBg:{background:"#161b22"},
-  fChip:{background:"#1c2333",border:"1.5px solid #30363d",color:"#8b949e"},
-};
-
-const CSS=`
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-  *{box-sizing:border-box;}body{margin:0;background:#fafafa;}
-  ::-webkit-scrollbar{width:0;height:0;}
-  .cp{cursor:pointer;}
-  .card{transition:box-shadow .2s;}.card:hover{box-shadow:0 6px 28px rgba(0,0,0,0.1)!important;}
-  .vmcard:hover{border-color:#1a6cf5!important;background:#f0f5ff;}
-  input:focus,textarea:focus{border-color:#1a6cf5!important;box-shadow:0 0 0 3px rgba(26,108,245,0.12);}
-  button:active{transform:scale(0.97);}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.2;}}
-  .spinner{width:28px;height:28px;border:3px solid #e8edf5;border-top-color:#1a6cf5;border-radius:50%;animation:spin .7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  a{text-decoration:none;color:inherit;}
-`;
