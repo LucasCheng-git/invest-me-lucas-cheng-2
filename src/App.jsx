@@ -49,9 +49,9 @@ export default function InvestMe() {
   const [notif, setNotif] = useState(null);
   const [notifType, setNotifType] = useState("info");
   const [booting, setBooting] = useState(true);
-  const [dark, setDark] = useState(()=>localStorage.getItem("im_dark")==="1");
+  const [dark, setDark] = useState(()=>{try{return localStorage.getItem("im_dark")==="1";}catch(e){return false;}});
 
-  function toggleDark(){setDark(d=>{localStorage.setItem("im_dark",d?"0":"1");return !d;});}
+  function toggleDark(){setDark(d=>{try{localStorage.setItem("im_dark",d?"0":"1");}catch(e){}return !d;});}
 
   function notify(msg, type="info") {
     setNotif(msg); setNotifType(type);
@@ -291,6 +291,26 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
 }
 
 // ─── FEED ─────────────────────────────────────────────────────────────────────
+function FundraisingBar({raised,goal,dark}) {
+  const pct = Math.min(Math.round((raised/goal)*100),100);
+  const fmtM = v => v>=1000000?`$${(v/1000000).toFixed(1)}M`:v>=1000?`$${(v/1000).toFixed(0)}K`:`$${v}`;
+  return (
+    <div style={{marginBottom:4}}>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+        <span style={{fontSize:12,fontWeight:700,color:"#1a6cf5"}}>💰 Raising {fmtM(goal)}</span>
+        <span style={{fontSize:12,fontWeight:700,color:pct>=100?"#34c759":"#ff9500"}}>{pct}% funded</span>
+      </div>
+      <div style={{height:8,borderRadius:8,background:dark?"#2a2a2a":"#e8edf5",overflow:"hidden"}}>
+        <div style={{height:"100%",width:`${pct}%`,borderRadius:8,background:pct>=100?"#34c759":pct>=50?"#1a6cf5":"#ff9500",transition:"width .6s ease"}}/>
+      </div>
+      <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+        <span style={{fontSize:11,color:dark?"#888":"#aaa"}}>Raised: {fmtM(raised)}</span>
+        <span style={{fontSize:11,color:dark?"#888":"#aaa"}}>Goal: {fmtM(goal)}</span>
+      </div>
+    </div>
+  );
+}
+
 function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setChatTarget,notify}) {
   const [likedMap,setLikedMap]=useState({});
   const [likeCounts,setLikeCounts]=useState({});
@@ -828,7 +848,8 @@ function StocksPage({dark=false}) {
 }
 
 // ─── FUNDRAISING BAR ─────────────────────────────────────────────────────────
-function FundraisingBar({raised,goal,dark}) {
+
+) {
   const pct = Math.min(Math.round((raised/goal)*100),100);
   const fmtM = v => v>=1000000?`$${(v/1000000).toFixed(1)}M`:v>=1000?`$${(v/1000).toFixed(0)}K`:`$${v}`;
   return (
