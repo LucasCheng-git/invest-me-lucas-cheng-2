@@ -615,7 +615,7 @@ function NewsPage({dark=false}) {
   const [lastUpdated, setLastUpdated] = useState(null);
 
   const tabs = [
-    { id:"politics", label:"🌍 Politics", q:"international politics world" },
+    { id:"politics", label:"🌍 Politics",  q:"international politics world" },
     { id:"tech",     label:"🤖 Tech & AI", q:"artificial intelligence technology" },
     { id:"finance",  label:"💰 Finance",   q:"financial markets economy stocks" },
     { id:"startup",  label:"🚀 Startups",  q:"startup venture capital funding" },
@@ -625,18 +625,14 @@ function NewsPage({dark=false}) {
 
   async function fetchNews() {
     setLoading(true);
-    const current = tabs.find(t=>t.id===tab);
+    const current = tabs.find(t => t.id === tab);
     try {
-      // GNews API — works from browser (no CORS issues)
-      const res = await fetch(
-        `https://gnews.io/api/v4/search?q=${encodeURIComponent(current.q)}&lang=en&max=15&sortby=publishedAt&apikey=pub_65d14e2b8e3f4a1c9d7b2f0e8a3c6d4f`
-      );
+      const res = await fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(current.q)}&lang=en&max=15&sortby=publishedAt&apikey=pub_65d14e2b8e3f4a1c9d7b2f0e8a3c6d4f`);
       const data = await res.json();
       if (data.articles && data.articles.length > 0) {
-        setArticles(data.articles.filter(a=>a.title&&a.image));
+        setArticles(data.articles.filter(a => a.title && a.image));
         setLastUpdated(new Date());
       } else {
-        // Fallback: use RSS via allorigins proxy
         await fetchRSS(current);
       }
     } catch(e) {
@@ -647,56 +643,36 @@ function NewsPage({dark=false}) {
 
   async function fetchRSS(current) {
     const feedMap = {
-      politics: [
-        "https://feeds.bbci.co.uk/news/world/rss.xml",
-        "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
-      ],
-      tech: [
-        "https://feeds.feedburner.com/TechCrunch",
-        "https://www.wired.com/feed/rss",
-      ],
-      finance: [
-        "https://feeds.marketwatch.com/marketwatch/topstories/",
-        "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
-        "https://www.cnbc.com/id/10000664/device/rss/rss.html",
-      ],
-      startup: [
-        "https://techcrunch.com/category/startups/feed/",
-        "https://feeds.feedburner.com/venturebeat/SZYF",
-        "https://www.entrepreneur.com/latest.rss",
-      ],
+      politics: ["https://feeds.bbci.co.uk/news/world/rss.xml","https://rss.nytimes.com/services/xml/rss/nyt/World.xml"],
+      tech:     ["https://feeds.feedburner.com/TechCrunch","https://www.wired.com/feed/rss"],
+      finance:  ["https://feeds.marketwatch.com/marketwatch/topstories/","https://www.cnbc.com/id/10000664/device/rss/rss.html"],
+      startup:  ["https://techcrunch.com/category/startups/feed/","https://feeds.feedburner.com/venturebeat/SZYF"],
     };
     const feedList = feedMap[current.id] || feedMap.politics;
     for (const feed of feedList) {
       try {
-        const url = `https://api.allorigins.win/get?url=${encodeURIComponent(feed)}`;
-        const res = await fetch(url);
+        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(feed)}`);
         const data = await res.json();
         if (!data.contents) continue;
         const parser = new window.DOMParser();
         const xml = parser.parseFromString(data.contents, "text/xml");
-        const items = Array.from(xml.querySelectorAll("item")).slice(0,15);
+        const items = Array.from(xml.querySelectorAll("item")).slice(0, 15);
         if (items.length === 0) continue;
         const sourceName = xml.querySelector("channel > title")?.textContent || "News";
-        const parsed = items.map((item,idx) => {
+        const parsed = items.map((item, idx) => {
           const encImg = item.querySelector("enclosure")?.getAttribute("url");
           const descHtml = item.querySelector("description")?.textContent || "";
-          const imgMatch = descHtml.match(/<img[^>]+src=["'](https?:[^"\']+)["\']/);
-          const descImg = imgMatch ? imgMatch[1] : null;
+          const imgMatch = descHtml.match(/<img[^>]+src=["'](https?:[^"']+)["']/);
           return {
             title: item.querySelector("title")?.textContent?.replace(/<!\[CDATA\[|\]\]>/g,"").trim() || "",
             description: descHtml.replace(/<[^>]+>/g,"").trim(),
             url: item.querySelector("link")?.textContent?.trim() || "#",
-            image: encImg || descImg || `https://picsum.photos/seed/${current.id}${idx}/400/220`,
+            image: encImg || (imgMatch ? imgMatch[1] : null) || `https://picsum.photos/seed/${current.id}${idx}/400/220`,
             source: { name: sourceName },
             publishedAt: item.querySelector("pubDate")?.textContent || new Date().toISOString(),
           };
         }).filter(a => a.title && a.title.length > 5);
-        if (parsed.length > 0) {
-          setArticles(parsed);
-          setLastUpdated(new Date());
-          return;
-        }
+        if (parsed.length > 0) { setArticles(parsed); setLastUpdated(new Date()); return; }
       } catch(e) { continue; }
     }
     setArticles([]);
@@ -708,102 +684,93 @@ function NewsPage({dark=false}) {
   }
 
   return (
-    <div style={{paddingBottom:80}}>
-      {/* Header */}
+    <div style={{paddingBottom:80,background:dark?"#0d1117":"#fafafa",minHeight:"100vh"}}>
       <div style={{background:"linear-gradient(135deg,#0d1117,#1a2744)",padding:"20px 16px 16px",color:"#fff"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
             <h2 style={{margin:"0 0 4px",fontSize:20,fontWeight:800}}>📰 News</h2>
-            <p style={{margin:0,fontSize:12,opacity:0.6}}>
-              {lastUpdated?"Updated "+lastUpdated.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}):"Loading…"}
-            </p>
+            <p style={{margin:0,fontSize:12,opacity:0.6}}>{lastUpdated?"Updated "+lastUpdated.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}):"Loading…"}</p>
           </div>
           <button style={{background:"rgba(255,255,255,0.12)",border:"none",color:"#fff",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={fetchNews}>🔄 Refresh</button>
         </div>
       </div>
-
-      {/* Tabs */}
-      <div style={{display:"flex",overflowX:"auto",background:"#fff",borderBottom:"2px solid #f0f0f0",scrollbarWidth:"none"}}>
-        {tabs.map(t=>(
-          <button key={t.id} style={{flexShrink:0,padding:"12px 16px",border:"none",background:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:13,color:tab===t.id?"#1a6cf5":"#aaa",borderBottom:tab===t.id?"3px solid #1a6cf5":"3px solid transparent",whiteSpace:"nowrap"}} onClick={()=>setTab(t.id)}>
+      <div style={{display:"flex",overflowX:"auto",background:dark?"#161b22":"#fff",borderBottom:`2px solid ${dark?"#21262d":"#f0f0f0"}`,scrollbarWidth:"none"}}>
+        {tabs.map(t => (
+          <button key={t.id} style={{flexShrink:0,padding:"12px 16px",border:"none",background:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:13,color:tab===t.id?"#1a6cf5":dark?"#888":"#aaa",borderBottom:tab===t.id?"3px solid #1a6cf5":"3px solid transparent",whiteSpace:"nowrap"}} onClick={()=>setTab(t.id)}>
             {t.label}
           </button>
         ))}
       </div>
-
-      {/* Articles */}
       <div style={{padding:"14px 14px"}}>
         {loading && <Spinner/>}
         {!loading && articles.length===0 && (
           <div style={{textAlign:"center",padding:"60px 20px"}}>
             <p style={{fontSize:32,margin:"0 0 12px"}}>📭</p>
-            <p style={{color:"#aaa",fontSize:14}}>No articles found right now.</p>
+            <p style={{color:dark?"#666":"#aaa",fontSize:14}}>No articles found right now.</p>
             <button style={{...S.btnP,width:"auto",padding:"10px 24px",marginTop:8}} onClick={fetchNews}>Try Again</button>
           </div>
         )}
-        {!loading && articles.length>0 && <>
-          {/* Featured article */}
-          <a href={articles[0].url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>
-            <div style={{...S.card,...(dark?DK.card:{}),marginBottom:14,cursor:"pointer"}} className="card">
-              <div style={{position:"relative"}}>
-                <img src={articles[0].image||articles[0].urlToImage} alt={articles[0].title} style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}} onError={e=>e.target.style.display="none"}/>
-                <div style={{position:"absolute",top:10,left:10,background:"#1a6cf5",color:"#fff",borderRadius:20,padding:"3px 10px",fontSize:10,fontWeight:700}}>⭐ TOP STORY</div>
-              </div>
-              <div style={{padding:"14px 16px"}}>
-                <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
-                  <span style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:700}}>{articles[0].source?.name}</span>
-                  <span style={{color:"#bbb",fontSize:11}}>{formatDate(articles[0].publishedAt)}</span>
+        {!loading && articles.length>0 && (
+          <div>
+            <a href={articles[0].url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>
+              <div style={{...S.card,background:dark?"#161b22":"#fff",marginBottom:14,cursor:"pointer"}} className="card">
+                <div style={{position:"relative"}}>
+                  <img src={articles[0].image||articles[0].urlToImage} alt={articles[0].title} style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}} onError={e=>e.target.style.display="none"}/>
+                  <div style={{position:"absolute",top:10,left:10,background:"#1a6cf5",color:"#fff",borderRadius:20,padding:"3px 10px",fontSize:10,fontWeight:700}}>⭐ TOP STORY</div>
                 </div>
-                <h3 style={{margin:"0 0 8px",fontSize:16,fontWeight:800,lineHeight:1.4,color:dark?"#e0e0e0":"#0d1117"}}>{articles[0].title}</h3>
-                <p style={{margin:0,color:dark?"#888":"#666",fontSize:13,lineHeight:1.55,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{articles[0].description}</p>
-              </div>
-            </div>
-          </a>
-          {/* Rest of articles */}
-          {articles.slice(1).map((article,i)=>(
-            <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>
-              <div style={{background:dark?"#161b22":"#fff",borderRadius:14,boxShadow:"0 1px 8px rgba(0,0,0,0.05)",marginBottom:10,display:"flex",gap:12,padding:12,cursor:"pointer",overflow:"hidden"}} className="card">
-                {(article.image||article.urlToImage)&&<img src={article.image||article.urlToImage} alt={article.title} style={{width:80,height:80,objectFit:"cover",borderRadius:10,flexShrink:0}} onError={e=>e.target.style.display="none"}/>}
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
-                    <span style={{color:"#1a6cf5",fontSize:11,fontWeight:700}}>{article.source?.name}</span>
-                    <span style={{color:"#ddd",fontSize:10}}>·</span>
-                    <span style={{color:"#bbb",fontSize:11}}>{formatDate(article.publishedAt)}</span>
+                <div style={{padding:"14px 16px"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+                    <span style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:700}}>{articles[0].source?.name}</span>
+                    <span style={{color:dark?"#888":"#bbb",fontSize:11}}>{formatDate(articles[0].publishedAt)}</span>
                   </div>
-                  <p style={{margin:0,fontWeight:700,fontSize:13,lineHeight:1.4,color:dark?"#e0e0e0":"#0d1117",display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{article.title}</p>
+                  <h3 style={{margin:"0 0 8px",fontSize:16,fontWeight:800,lineHeight:1.4,color:dark?"#e0e0e0":"#0d1117"}}>{articles[0].title}</h3>
+                  <p style={{margin:0,color:dark?"#888":"#666",fontSize:13,lineHeight:1.55,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{articles[0].description}</p>
                 </div>
               </div>
             </a>
-          ))}
-        </>}
+            {articles.slice(1).map((article,i) => (
+              <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>
+                <div style={{background:dark?"#161b22":"#fff",borderRadius:14,boxShadow:"0 1px 8px rgba(0,0,0,0.05)",marginBottom:10,display:"flex",gap:12,padding:12,cursor:"pointer",overflow:"hidden"}} className="card">
+                  {(article.image||article.urlToImage)&&<img src={article.image||article.urlToImage} alt={article.title} style={{width:80,height:80,objectFit:"cover",borderRadius:10,flexShrink:0}} onError={e=>e.target.style.display="none"}/>}
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
+                      <span style={{color:"#1a6cf5",fontSize:11,fontWeight:700}}>{article.source?.name}</span>
+                      <span style={{color:dark?"#555":"#ddd",fontSize:10}}>·</span>
+                      <span style={{color:dark?"#888":"#bbb",fontSize:11}}>{formatDate(article.publishedAt)}</span>
+                    </div>
+                    <p style={{margin:0,fontWeight:700,fontSize:13,lineHeight:1.4,color:dark?"#e0e0e0":"#0d1117",display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{article.title}</p>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-// ─── STOCKS PAGE ──────────────────────────────────────────────────────────────
 function StocksPage({dark=false}) {
   const INDICES = [
-    { symbol:"SPY",  name:"S&P 500",    icon:"🇺🇸", color:"#1a6cf5" },
-    { symbol:"QQQ",  name:"Nasdaq 100", icon:"💻", color:"#7c3aed" },
-    { symbol:"DIA",  name:"Dow Jones",  icon:"🏭", color:"#0891b2" },
+    { symbol:"SPY", name:"S&P 500",    icon:"🇺🇸", color:"#1a6cf5" },
+    { symbol:"QQQ", name:"Nasdaq 100", icon:"💻",  color:"#7c3aed" },
+    { symbol:"DIA", name:"Dow Jones",  icon:"🏭",  color:"#0891b2" },
   ];
   const WATCHLIST = [
-    { symbol:"AAPL",  name:"Apple",       icon:"🍎" },
-    { symbol:"MSFT",  name:"Microsoft",   icon:"🪟" },
-    { symbol:"GOOGL", name:"Alphabet",    icon:"🔍" },
-    { symbol:"AMZN",  name:"Amazon",      icon:"📦" },
-    { symbol:"NVDA",  name:"NVIDIA",      icon:"🎮" },
-    { symbol:"TSLA",  name:"Tesla",       icon:"🚗" },
-    { symbol:"META",  name:"Meta",        icon:"👁️" },
-    { symbol:"NFLX",  name:"Netflix",     icon:"🎬" },
+    { symbol:"AAPL",  name:"Apple",     icon:"🍎" },
+    { symbol:"MSFT",  name:"Microsoft", icon:"🪟" },
+    { symbol:"GOOGL", name:"Alphabet",  icon:"🔍" },
+    { symbol:"AMZN",  name:"Amazon",    icon:"📦" },
+    { symbol:"NVDA",  name:"NVIDIA",    icon:"🎮" },
+    { symbol:"TSLA",  name:"Tesla",     icon:"🚗" },
+    { symbol:"META",  name:"Meta",      icon:"👁️" },
+    { symbol:"NFLX",  name:"Netflix",   icon:"🎬" },
   ];
 
   const [quotes, setQuotes] = useState({});
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [marketStatus, setMarketStatus] = useState(null);
-
   const allSymbols = [...INDICES.map(i=>i.symbol), ...WATCHLIST.map(w=>w.symbol)];
 
   useEffect(() => { fetchAll(); }, []);
@@ -811,18 +778,13 @@ function StocksPage({dark=false}) {
   async function fetchAll() {
     setLoading(true);
     try {
-      // Fetch market status
       const msRes = await fetch(`https://finnhub.io/api/v1/stock/market-status?exchange=US&token=${FINNHUB_KEY}`);
       const msData = await msRes.json();
       setMarketStatus(msData);
-
-      // Fetch all quotes in parallel
       const results = await Promise.all(
         allSymbols.map(sym =>
           fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${FINNHUB_KEY}`)
-            .then(r=>r.json())
-            .then(d=>({symbol:sym, ...d}))
-            .catch(()=>({symbol:sym}))
+            .then(r => r.json()).then(d => ({symbol:sym,...d})).catch(() => ({symbol:sym}))
         )
       );
       const map = {};
@@ -833,17 +795,13 @@ function StocksPage({dark=false}) {
     setLoading(false);
   }
 
-  function pct(q) {
-    if(!q||!q.pc||!q.c) return 0;
-    return ((q.c - q.pc) / q.pc * 100);
-  }
+  function pct(q) { if(!q||!q.pc||!q.c) return 0; return ((q.c-q.pc)/q.pc*100); }
   function isUp(q) { return pct(q) >= 0; }
   function fmtPct(q) { const p=pct(q); return (p>=0?"+":"")+p.toFixed(2)+"%"; }
   function fmtPrice(q) { return q?.c ? "$"+q.c.toFixed(2) : "—"; }
 
   return (
-    <div style={{paddingBottom:80}}>
-      {/* Header */}
+    <div style={{paddingBottom:80,background:dark?"#0d1117":"#fafafa",minHeight:"100vh"}}>
       <div style={{background:"linear-gradient(135deg,#0d1117,#0a2540)",padding:"20px 16px 16px",color:"#fff"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
@@ -856,102 +814,76 @@ function StocksPage({dark=false}) {
           <button style={{background:"rgba(255,255,255,0.12)",border:"none",color:"#fff",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={fetchAll}>🔄 Refresh</button>
         </div>
       </div>
-
       <div style={{padding:"16px 14px"}}>
         {loading && <Spinner/>}
-        {!loading && <>
-          {/* Major Indices */}
-          <h3 style={{...S.secT,marginBottom:12}}>Major Indices</h3>
-          <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:24}}>
-            {INDICES.map(idx=>{
-              const q=quotes[idx.symbol];
-              const up=isUp(q);
-              return (
-                <div key={idx.symbol} style={{background:dark?"#161b22":"#fff",borderRadius:16,padding:"16px 18px",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",display:"flex",alignItems:"center"}}>
-                  <div style={{width:46,height:46,borderRadius:14,background:idx.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{idx.icon}</div>
-                  <div style={{marginLeft:14,flex:1}}>
-                    <div style={{fontWeight:800,fontSize:16,color:"#0d1117"}}>{idx.name}</div>
-                    <div style={{color:"#aaa",fontSize:12,marginTop:2}}>{idx.symbol}</div>
-                  </div>
-                  <div style={{textAlign:"right"}}>
-                    <div style={{fontWeight:800,fontSize:18,color:dark?"#e0e0e0":"#0d1117"}}>{fmtPrice(q)}</div>
-                    <div style={{fontSize:13,fontWeight:700,color:up?"#34c759":"#ff3b30",marginTop:2}}>
-                      {up?"▲":"▼"} {fmtPct(q)}
+        {!loading && (
+          <div>
+            <h3 style={{...S.secT,color:dark?"#e0e0e0":"#0d1117",marginBottom:12}}>Major Indices</h3>
+            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:24}}>
+              {INDICES.map(idx => {
+                const q = quotes[idx.symbol];
+                const up = isUp(q);
+                return (
+                  <div key={idx.symbol} style={{background:dark?"#161b22":"#fff",borderRadius:16,padding:"16px 18px",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",display:"flex",alignItems:"center"}}>
+                    <div style={{width:46,height:46,borderRadius:14,background:idx.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{idx.icon}</div>
+                    <div style={{marginLeft:14,flex:1}}>
+                      <div style={{fontWeight:800,fontSize:16,color:dark?"#e0e0e0":"#0d1117"}}>{idx.name}</div>
+                      <div style={{color:dark?"#888":"#aaa",fontSize:12,marginTop:2}}>{idx.symbol}</div>
+                    </div>
+                    <div style={{textAlign:"right"}}>
+                      <div style={{fontWeight:800,fontSize:18,color:dark?"#e0e0e0":"#0d1117"}}>{fmtPrice(q)}</div>
+                      <div style={{fontSize:13,fontWeight:700,color:up?"#34c759":"#ff3b30",marginTop:2}}>{up?"▲":"▼"} {fmtPct(q)}</div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Watchlist */}
-          <h3 style={{...S.secT,marginBottom:12}}>Top Stocks</h3>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-            {WATCHLIST.map(stock=>{
-              const q=quotes[stock.symbol];
-              const up=isUp(q);
-              return (
-                <div key={stock.symbol} style={{background:dark?"#161b22":"#fff",borderRadius:14,padding:"14px",boxShadow:"0 2px 10px rgba(0,0,0,0.05)"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-                    <span style={{fontSize:20}}>{stock.icon}</span>
-                    <div>
-                      <div style={{fontWeight:800,fontSize:13,color:dark?"#e0e0e0":"#0d1117"}}>{stock.symbol}</div>
-                      <div style={{color:dark?"#666":"#bbb",fontSize:10}}>{stock.name}</div>
+                );
+              })}
+            </div>
+            <h3 style={{...S.secT,color:dark?"#e0e0e0":"#0d1117",marginBottom:12}}>Top Stocks</h3>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              {WATCHLIST.map(stock => {
+                const q = quotes[stock.symbol];
+                const up = isUp(q);
+                return (
+                  <div key={stock.symbol} style={{background:dark?"#161b22":"#fff",borderRadius:14,padding:"14px",boxShadow:"0 2px 10px rgba(0,0,0,0.05)"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                      <span style={{fontSize:20}}>{stock.icon}</span>
+                      <div>
+                        <div style={{fontWeight:800,fontSize:13,color:dark?"#e0e0e0":"#0d1117"}}>{stock.symbol}</div>
+                        <div style={{color:dark?"#666":"#bbb",fontSize:10}}>{stock.name}</div>
+                      </div>
+                    </div>
+                    <div style={{fontWeight:800,fontSize:17,color:dark?"#e0e0e0":"#0d1117",marginBottom:2}}>{fmtPrice(q)}</div>
+                    <div style={{display:"inline-flex",alignItems:"center",gap:4,background:up?"#e8f5e9":"#fff0f0",borderRadius:8,padding:"3px 8px"}}>
+                      <span style={{fontSize:10,fontWeight:800,color:up?"#34c759":"#ff3b30"}}>{up?"▲":"▼"} {fmtPct(q)}</span>
                     </div>
                   </div>
-                  <div style={{fontWeight:800,fontSize:17,color:dark?"#e0e0e0":"#0d1117",marginBottom:2}}>{fmtPrice(q)}</div>
-                  <div style={{display:"inline-flex",alignItems:"center",gap:4,background:up?"#e8f5e9":"#fff0f0",borderRadius:8,padding:"3px 8px"}}>
-                    <span style={{fontSize:10,fontWeight:800,color:up?"#34c759":"#ff3b30"}}>{up?"▲":"▼"} {fmtPct(q)}</span>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+            <div style={{marginTop:20,padding:"10px 14px",background:dark?"#1a1a1a":"#f5f7fa",borderRadius:12,fontSize:11,color:dark?"#555":"#bbb",textAlign:"center",lineHeight:1.6}}>
+              Data provided by Finnhub · Prices may be delayed 15 mins · Not financial advice
+            </div>
           </div>
-
-          {/* Disclaimer */}
-          <div style={{marginTop:20,padding:"10px 14px",background:"#f5f7fa",borderRadius:12,fontSize:11,color:"#bbb",textAlign:"center",lineHeight:1.6}}>
-            Data provided by Finnhub · Prices may be delayed 15 mins · Not financial advice
-          </div>
-        </>}
+        )}
       </div>
     </div>
   );
 }
 
-// ─── FUNDRAISING BAR ─────────────────────────────────────────────────────────
-
-) {
-  const pct = Math.min(Math.round((raised/goal)*100),100);
-  const fmtM = v => v>=1000000?`$${(v/1000000).toFixed(1)}M`:v>=1000?`$${(v/1000).toFixed(0)}K`:`$${v}`;
-  return (
-    <div style={{marginBottom:4}}>
-      <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-        <span style={{fontSize:12,fontWeight:700,color:"#1a6cf5"}}>💰 Raising {fmtM(goal)}</span>
-        <span style={{fontSize:12,fontWeight:700,color:pct>=100?"#34c759":"#ff9500"}}>{pct}% funded</span>
-      </div>
-      <div style={{height:8,borderRadius:8,background:dark?"#2a2a2a":"#e8edf5",overflow:"hidden"}}>
-        <div style={{height:"100%",width:`${pct}%`,borderRadius:8,background:pct>=100?"#34c759":pct>=50?"#1a6cf5":"#ff9500",transition:"width .6s ease"}}/>
-      </div>
-      <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-        <span style={{fontSize:11,color:dark?"#888":"#aaa"}}>Raised: {fmtM(raised)}</span>
-        <span style={{fontSize:11,color:dark?"#888":"#aaa"}}>Goal: {fmtM(goal)}</span>
-      </div>
-    </div>
-  );
-}
-
-// ─── NOTIFICATIONS PAGE ───────────────────────────────────────────────────────
 function NotificationsPage({notifications,setNotifications,allUsers,dark,setScreen,setChatTarget}) {
-  const D = dark ? DK : {};
-  function markAllRead(){setNotifications(n=>n.map(x=>({...x,read:true})));}
-  function getUser(id){return allUsers.find(u=>u.id===id);}
-  const icons={follow:"👥",message:"💬",like:"❤️",system:"🔔"};
+  function markAllRead() { setNotifications(n => n.map(x => ({...x,read:true}))); }
+  const icons = {follow:"👥",message:"💬",like:"❤️",system:"🔔"};
   return (
-    <div style={{paddingBottom:80,...D.app}}>
+    <div style={{paddingBottom:80,background:dark?"#0d1117":"#fafafa",minHeight:"100vh"}}>
       <div style={{background:"linear-gradient(135deg,#7c3aed,#4f1fa8)",padding:"20px 16px 16px",color:"#fff"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div><h2 style={{margin:"0 0 4px",fontSize:20,fontWeight:800}}>🔔 Notifications</h2><p style={{margin:0,fontSize:12,opacity:0.7}}>{notifications.filter(n=>!n.read).length} unread</p></div>
-          {notifications.length>0&&<button style={{background:"rgba(255,255,255,0.15)",border:"none",color:"#fff",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={markAllRead}>Mark all read</button>}
+          <div>
+            <h2 style={{margin:"0 0 4px",fontSize:20,fontWeight:800}}>🔔 Notifications</h2>
+            <p style={{margin:0,fontSize:12,opacity:0.7}}>{notifications.filter(n=>!n.read).length} unread</p>
+          </div>
+          {notifications.length>0&&(
+            <button style={{background:"rgba(255,255,255,0.15)",border:"none",color:"#fff",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={markAllRead}>Mark all read</button>
+          )}
         </div>
       </div>
       <div style={{padding:"14px 14px"}}>
@@ -959,11 +891,11 @@ function NotificationsPage({notifications,setNotifications,allUsers,dark,setScre
           <div style={{textAlign:"center",padding:"60px 20px"}}>
             <p style={{fontSize:40,margin:"0 0 12px"}}>🔕</p>
             <p style={{color:dark?"#666":"#aaa",fontSize:14}}>No notifications yet.</p>
-            <p style={{color:dark?"#555":"#bbb",fontSize:12}}>When investors follow you or message you, you'll see it here.</p>
+            <p style={{color:dark?"#555":"#bbb",fontSize:12}}>When investors follow or message you, you will see it here.</p>
           </div>
         )}
-        {notifications.map((n,i)=>(
-          <div key={n.id||i} onClick={()=>{setNotifications(ns=>ns.map((x,j)=>j===i?{...x,read:true}:x));}} style={{background:n.read?(dark?"#1a1a1a":"#fafafa"):(dark?"#1e2340":"#f0f5ff"),borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:12,cursor:"pointer",border:`1px solid ${n.read?(dark?"#2a2a2a":"#eee"):"#c7d9ff"}`,transition:"all .2s"}}>
+        {notifications.map((n,i) => (
+          <div key={n.id||i} onClick={()=>setNotifications(ns=>ns.map((x,j)=>j===i?{...x,read:true}:x))} style={{background:n.read?(dark?"#1a1a1a":"#fafafa"):(dark?"#1e2340":"#f0f5ff"),borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:12,cursor:"pointer",border:"1px solid "+(n.read?(dark?"#2a2a2a":"#eee"):"#c7d9ff"),transition:"all .2s"}}>
             <div style={{width:42,height:42,borderRadius:"50%",background:n.read?(dark?"#2a2a2a":"#e8edf5"):"#dce8ff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>
               {icons[n.type]||"🔔"}
             </div>
@@ -979,7 +911,6 @@ function NotificationsPage({notifications,setNotifications,allUsers,dark,setScre
   );
 }
 
-// ─── INVESTOR DASHBOARD ───────────────────────────────────────────────────────
 function InvestorDashboard({me,allUsers,messages,dark,setScreen,setChatTarget}) {
   const D = dark ? DK : {};
   const startups = allUsers.filter(u=>u.role==="startup");
