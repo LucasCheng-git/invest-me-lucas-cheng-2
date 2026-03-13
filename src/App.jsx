@@ -43,6 +43,8 @@ function Spinner() {
 export default function InvestMe() {
   const [me, setMe] = useState(null);
   const [screen, setScreen] = useState("splash");
+  const [dark, setDark] = useState(false);
+  function toggleDark(){ setDark(d=>!d); }
   const [watchTarget, setWatchTarget] = useState(null);
   const [chatTarget, setChatTarget] = useState(null);
   const [filterInd, setFilterInd] = useState("All");
@@ -93,7 +95,7 @@ export default function InvestMe() {
   );
 
   return (
-    <div style={S.app}>
+    <div style={{...S.app,background:dark?"#0d1117":"#fafafa"}}>
       <style>{CSS}</style>
       {notif && <div style={{...S.toast,background:toastBg}}>{notif}</div>}
       {screen==="splash"   && <Splash setScreen={setScreen}/>}
@@ -103,7 +105,8 @@ export default function InvestMe() {
         <Shell me={me} setMe={setMe} screen={screen} setScreen={setScreen} logout={logout}
           watchTarget={watchTarget} setWatchTarget={setWatchTarget}
           chatTarget={chatTarget} setChatTarget={setChatTarget}
-          filterInd={filterInd} setFilterInd={setFilterInd} notify={notify}/>
+          filterInd={filterInd} setFilterInd={setFilterInd} notify={notify}
+          dark={dark} toggleDark={toggleDark}/>
       )}
     </div>
   );
@@ -215,7 +218,7 @@ function WebcamRecorder({setVideoBlob,notify}) {
 }
 
 // ─── SHELL ────────────────────────────────────────────────────────────────────
-function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chatTarget,setChatTarget,filterInd,setFilterInd,notify}) {
+function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chatTarget,setChatTarget,filterInd,setFilterInd,notify,dark,toggleDark}) {
   const [allUsers,setAllUsers]=useState([]);
   const [messages,setMessages]=useState([]);
   const [loadingUsers,setLoadingUsers]=useState(true);
@@ -247,15 +250,16 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
 
   return (
     <div style={{display:"flex",flexDirection:"column",minHeight:"100vh"}}>
-      <header style={S.hdr}>
-        <div style={S.logoRow} onClick={()=>setScreen("feed")} className="cp"><div style={S.lm}>I</div><span style={{...S.lt,fontSize:20}}>InvestMe</span></div>
+      <header style={{...S.hdr,...(dark?{background:"#161b22",borderBottom:"1px solid #21262d"}:{})}}>
+        <div style={S.logoRow} onClick={()=>setScreen("feed")} className="cp"><div style={S.lm}>I</div><span style={{...S.lt,fontSize:20,color:dark?"#e0e0e0":"#0d1117"}}>InvestMe</span></div>
         <nav style={{display:"flex",gap:0}}>
-          {navItems.map(n=>(<button key={n.s} style={{...S.nBtn,...((screen===n.s||(screen==="chat"&&n.s==="messages")||(screen==="watch"&&n.s==="feed"))?S.nBtnOn:{})}} onClick={()=>setScreen(n.s)}><span style={{position:"relative",fontSize:18}}>{n.icon}{n.badge>0&&<span style={S.badge}>{n.badge}</span>}</span><span style={{fontSize:8,color:(screen===n.s)?"#1a6cf5":"#aaa"}}>{n.lbl}</span></button>))}
-          <button style={S.nBtn} onClick={logout}><span style={{fontSize:18}}>↩️</span><span style={{fontSize:8,color:"#aaa"}}>Out</span></button>
+          {navItems.map(n=>(<button key={n.s} style={{...S.nBtn,...((screen===n.s||(screen==="chat"&&n.s==="messages")||(screen==="watch"&&n.s==="feed"))?S.nBtnOn:{})}} onClick={()=>setScreen(n.s)}><span style={{position:"relative",fontSize:18}}>{n.icon}{n.badge>0&&<span style={S.badge}>{n.badge}</span>}</span><span style={{fontSize:8,color:(screen===n.s)?"#1a6cf5":dark?"#888":"#aaa"}}>{n.lbl}</span></button>))}
+          <button style={S.nBtn} onClick={toggleDark}><span style={{fontSize:18}}>{dark?"☀️":"🌙"}</span><span style={{fontSize:8,color:dark?"#888":"#aaa"}}>{dark?"Light":"Dark"}</span></button>
+          <button style={S.nBtn} onClick={logout}><span style={{fontSize:18}}>↩️</span><span style={{fontSize:8,color:dark?"#888":"#aaa"}}>Out</span></button>
         </nav>
       </header>
       <main style={{flex:1,overflowY:"auto"}}>
-        {screen==="feed"&&(loadingUsers?<Spinner/>:<Feed me={me} displayS={displayS} filterInd={filterInd} setFilterInd={setFilterInd} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} notify={notify}/>)}
+        {screen==="feed"&&(loadingUsers?<Spinner/>:<Feed me={me} displayS={displayS} filterInd={filterInd} setFilterInd={setFilterInd} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} notify={notify} dark={dark}/>)}
         {screen==="profile"&&<Profile me={me} setMe={setMe} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} allUsers={allUsers} notify={notify}/>}
         {screen==="messages"&&<Inbox peers={peers()} me={me} messages={messages} setChatTarget={setChatTarget} setScreen={setScreen} allUsers={allUsers}/>}
         {screen==="chat"&&chatTarget&&<Chat me={me} peer={chatTarget} convo={getConvo(me.id,chatTarget.id)} sendMsg={sendMsg} setScreen={setScreen}/>}
@@ -269,7 +273,7 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
 }
 
 // ─── FEED ─────────────────────────────────────────────────────────────────────
-function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setChatTarget,notify}) {
+function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setChatTarget,notify,dark=false}) {
   const [likedMap,setLikedMap]=useState({});
   const [likeCounts,setLikeCounts]=useState({});
   const [followMap,setFollowMap]=useState({});
@@ -291,13 +295,13 @@ function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setCh
 
   return (
     <div style={{paddingBottom:40}}>
-      <div style={{padding:"12px 14px 4px"}}><div style={{position:"relative"}}><span style={{position:"absolute",left:13,top:"50%",transform:"translateY(-50%)",fontSize:15,pointerEvents:"none"}}>🔍</span><input style={{...S.inp,paddingLeft:38,borderRadius:24,background:"#f5f7fa",border:"1.5px solid #eee"}} placeholder="Search pitches, industries…" value={search} onChange={e=>setSearch(e.target.value)}/>{search&&<button style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",fontSize:15,color:"#aaa"}} onClick={()=>setSearch("")}>✕</button>}</div></div>
-      <div style={S.fBar}>{["All",...INDUSTRIES].map(ind=>(<button key={ind} style={{...S.fChip,...(filterInd===ind?S.fChipOn:{})}} onClick={()=>setFilterInd(ind)}>{ind!=="All"&&ICONS[ind]} {ind}</button>))}</div>
+      <div style={{padding:"12px 14px 4px"}}><div style={{position:"relative"}}><span style={{position:"absolute",left:13,top:"50%",transform:"translateY(-50%)",fontSize:15,pointerEvents:"none"}}>🔍</span><input style={{...S.inp,paddingLeft:38,borderRadius:24,background:dark?"#1c2333":"#f5f7fa",border:dark?"1.5px solid #30363d":"1.5px solid #eee",color:dark?"#e0e0e0":"#0d1117"}} placeholder="Search pitches, industries…" value={search} onChange={e=>setSearch(e.target.value)}/>{search&&<button style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",fontSize:15,color:"#aaa"}} onClick={()=>setSearch("")}>✕</button>}</div></div>
+      <div style={S.fBar}>{["All",...INDUSTRIES].map(ind=>(<button key={ind} style={{...S.fChip,...(dark?{background:"#1c2333",border:"1.5px solid #30363d",color:"#8b949e"}:{}),...(filterInd===ind?S.fChipOn:{})}} onClick={()=>setFilterInd(ind)}>{ind!=="All"&&ICONS[ind]} {ind}</button>))}</div>
       {me.role==="investor"&&filterInd==="All"&&<div style={S.hint}>Showing: {me.industries?.map(i=>`${ICONS[i]} ${i}`).join(" · ")}</div>}
       <div style={{padding:"0 14px",display:"flex",flexDirection:"column",gap:16}}>
         {filtered.length===0&&<p style={{textAlign:"center",color:"#ccc",padding:"60px 0",fontSize:15}}>{search?"No results found 🔍":"No pitches here yet."}</p>}
         {filtered.map(s=>(
-          <div key={s.id} style={S.card} className="card">
+          <div key={s.id} style={{...S.card,background:dark?"#161b22":"#fff"}} className="card">
             <div style={{position:"relative",cursor:"pointer"}} onClick={()=>openWatch(s)}>
               <img src={s.video_thumb||`https://picsum.photos/seed/${s.id}/400/300`} alt={s.pitch_title} style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}}/>
               <div style={S.playBtn}>▶</div>
@@ -307,11 +311,11 @@ function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setCh
             <div style={{padding:"14px 16px 16px"}}>
               <div style={{display:"flex",alignItems:"center",marginBottom:10}}>
                 <Av src={s.avatar_url} name={s.name} size={38}/>
-                <div style={{marginLeft:10,flex:1}}><div style={{fontWeight:700,fontSize:14}}>{s.name}</div><div style={{color:"#aaa",fontSize:12}}>{s.industry}</div></div>
+                <div style={{marginLeft:10,flex:1}}><div style={{fontWeight:700,fontSize:14,color:dark?"#e0e0e0":"#0d1117"}}>{s.name}</div><div style={{color:dark?"#888":"#aaa",fontSize:12}}>{s.industry}</div></div>
                 {me.id!==s.id&&<button style={{...S.smBtn,background:followMap[s.id]?"#e8f5e9":"#f0f5ff",color:followMap[s.id]?"#34c759":"#1a6cf5",border:followMap[s.id]?"1.5px solid #34c759":"1.5px solid transparent"}} onClick={()=>toggleFollow(s.id)}>{followMap[s.id]?"✓ Following":"+ Follow"}</button>}
               </div>
-              <p style={{margin:"0 0 4px",fontWeight:700,fontSize:15}}>{s.pitch_title||s.name}</p>
-              <p style={{margin:"0 0 12px",color:"#666",fontSize:13,lineHeight:1.5}}>{s.bio}</p>
+              <p style={{margin:"0 0 4px",fontWeight:700,fontSize:15,color:dark?"#e0e0e0":"#0d1117"}}>{s.pitch_title||s.name}</p>
+              <p style={{margin:"0 0 12px",color:dark?"#888":"#666",fontSize:13,lineHeight:1.5}}>{s.bio}</p>
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <button style={S.aBtn} onClick={()=>toggleLike(s.id)}>{likedMap[s.id]?"❤️":"🤍"} {likeCounts[s.id]||s.likes||0}</button>
                 <button style={S.aBtn}>👁 {s.views||0}</button>
