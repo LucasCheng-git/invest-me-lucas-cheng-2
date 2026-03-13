@@ -19,77 +19,6 @@ const ICONS = {
   "Cybersecurity":"🔒","Web3 & Crypto":"⛓️","Gaming":"🎮","FoodTech":"🍽️","SpaceTech":"🚀"
 };
 
-// ─── STYLES ───────────────────────────────────────────────────────────────────
-const S={
-  app:{fontFamily:"'DM Sans',sans-serif",background:"#fafafa",minHeight:"100vh",maxWidth:480,margin:"0 auto"},
-  splash:{height:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#fff"},
-  logoRow:{display:"flex",alignItems:"center",gap:8},
-  lm:{background:"#1a6cf5",color:"#fff",fontWeight:800,fontSize:20,width:38,height:38,borderRadius:11,display:"flex",alignItems:"center",justifyContent:"center"},
-  lt:{fontSize:26,fontWeight:800,color:"#0d1117",letterSpacing:"-0.5px"},
-  aWrap:{minHeight:"100vh",display:"flex",justifyContent:"center",alignItems:"flex-start",background:"#fafafa",padding:"32px 16px"},
-  aCard:{background:"#fff",borderRadius:20,padding:"28px 24px",width:"100%",maxWidth:400,boxShadow:"0 4px 30px rgba(0,0,0,0.07)",display:"flex",flexDirection:"column",gap:11},
-  aTitle:{margin:"4px 0 6px",fontSize:21,fontWeight:800,color:"#0d1117"},
-  aSwitch:{textAlign:"center",color:"#aaa",fontSize:13,margin:0},
-  inp:{border:"1.5px solid #e8edf5",borderRadius:12,padding:"11px 14px",fontSize:14,outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"'DM Sans',sans-serif",color:"#0d1117"},
-  btnP:{background:"#1a6cf5",color:"#fff",border:"none",borderRadius:12,padding:"13px 0",fontSize:15,fontWeight:700,cursor:"pointer",width:"100%",fontFamily:"'DM Sans',sans-serif"},
-  btnG:{background:"#fff",color:"#1a6cf5",border:"1.5px solid #1a6cf5",borderRadius:12,padding:"12px 0",fontSize:15,fontWeight:600,cursor:"pointer",width:"100%",fontFamily:"'DM Sans',sans-serif"},
-  lnk:{color:"#1a6cf5",cursor:"pointer",fontWeight:600},
-  rCard:{flex:1,border:"2px solid #e8edf5",borderRadius:16,padding:"18px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer"},
-  rCardOn:{border:"2px solid #1a6cf5",background:"#f0f5ff"},
-  indGrid:{display:"flex",flexWrap:"wrap",gap:7,maxHeight:220,overflowY:"auto"},
-  iChip:{background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"6px 11px",fontSize:12,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"},
-  iChipOn:{background:"#f0f5ff",border:"1.5px solid #1a6cf5",color:"#1a6cf5"},
-  vmCard:{flex:1,border:"2px solid #e8edf5",borderRadius:16,padding:"18px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer"},
-  vBox:{border:"2px dashed #e8edf5",borderRadius:14,padding:24,display:"flex",flexDirection:"column",alignItems:"center",cursor:"pointer",minHeight:110,justifyContent:"center"},
-  hdr:{position:"sticky",top:0,zIndex:100,background:"#fff",borderBottom:"1px solid #f0f0f0",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px"},
-  nBtn:{background:"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",padding:"5px 6px",borderRadius:10,gap:2,position:"relative"},
-  nBtnOn:{background:"#f0f5ff"},
-  badge:{position:"absolute",top:-2,right:-4,background:"#ff3b30",color:"#fff",fontSize:9,fontWeight:700,width:15,height:15,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"},
-  fBar:{display:"flex",gap:7,overflowX:"auto",padding:"10px 14px 8px",scrollbarWidth:"none"},
-  fChip:{background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"6px 12px",fontSize:12,cursor:"pointer",whiteSpace:"nowrap",fontWeight:500,fontFamily:"'DM Sans',sans-serif",flexShrink:0},
-  fChipOn:{background:"#1a6cf5",color:"#fff",border:"1.5px solid #1a6cf5"},
-  hint:{margin:"0 14px 10px",padding:"9px 13px",background:"#f0f5ff",borderRadius:11,fontSize:12,color:"#1a6cf5"},
-  card:{background:"#fff",borderRadius:18,boxShadow:"0 2px 14px rgba(0,0,0,0.06)",overflow:"hidden"},
-  playBtn:{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.18)",fontSize:40,color:"#fff"},
-  indBadge:{position:"absolute",top:10,left:10,background:"rgba(0,0,0,0.55)",color:"#fff",borderRadius:20,padding:"4px 10px",fontSize:11,backdropFilter:"blur(4px)"},
-  aBtn:{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:"#555",padding:"4px 6px",borderRadius:8,fontFamily:"'DM Sans',sans-serif"},
-  back:{background:"none",border:"none",cursor:"pointer",fontSize:15,fontWeight:700,color:"#1a6cf5",padding:"0 8px 0 0",display:"inline-block"},
-  secT:{fontSize:15,fontWeight:700,color:"#0d1117",margin:"0 0 10px"},
-  smBtn:{background:"#f0f5ff",color:"#1a6cf5",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",flexShrink:0},
-  toast:{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",color:"#fff",padding:"12px 24px",borderRadius:24,fontSize:14,fontWeight:600,zIndex:9999,boxShadow:"0 4px 20px rgba(0,0,0,0.25)",whiteSpace:"nowrap",transition:"background .3s"},
-};
-
-// ─── DARK MODE OVERRIDES ──────────────────────────────────────────────────────
-const DK={
-  app:{background:"#0d1117"},
-  hdr:{background:"#161b22",borderBottom:"1px solid #21262d"},
-  nBtnOn:{background:"#1c2333"},
-  card:{background:"#161b22",boxShadow:"0 2px 14px rgba(0,0,0,0.3)"},
-  inp:{background:"#1c2333",border:"1.5px solid #30363d",color:"#e0e0e0"},
-  text:{color:"#e0e0e0"},
-  subText:{color:"#8b949e"},
-  aCard:{background:"#161b22",boxShadow:"0 4px 30px rgba(0,0,0,0.4)"},
-  secBg:{background:"#161b22"},
-  fChip:{background:"#1c2333",border:"1.5px solid #30363d",color:"#8b949e"},
-};
-
-const CSS=`
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-  *{box-sizing:border-box;}body{margin:0;background:#fafafa;}
-  ::-webkit-scrollbar{width:0;height:0;}
-  .cp{cursor:pointer;}
-  .card{transition:box-shadow .2s;}.card:hover{box-shadow:0 6px 28px rgba(0,0,0,0.1)!important;}
-  .vmcard:hover{border-color:#1a6cf5!important;background:#f0f5ff;}
-  input:focus,textarea:focus{border-color:#1a6cf5!important;box-shadow:0 0 0 3px rgba(26,108,245,0.12);}
-  button:active{transform:scale(0.97);}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.2;}}
-  .spinner{width:28px;height:28px;border:3px solid #e8edf5;border-top-color:#1a6cf5;border-radius:50%;animation:spin .7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  a{text-decoration:none;color:inherit;}
-`;
-
-
-
 function timeAgo(ts) {
   const d = Date.now() - new Date(ts).getTime();
   if (d < 60000) return "just now";
@@ -120,9 +49,6 @@ export default function InvestMe() {
   const [notif, setNotif] = useState(null);
   const [notifType, setNotifType] = useState("info");
   const [booting, setBooting] = useState(true);
-  const [dark, setDark] = useState(()=>{try{return localStorage.getItem("im_dark")==="1";}catch(e){return false;}});
-
-  function toggleDark(){setDark(d=>{try{localStorage.setItem("im_dark",d?"0":"1");}catch(e){}return !d;});}
 
   function notify(msg, type="info") {
     setNotif(msg); setNotifType(type);
@@ -157,7 +83,7 @@ export default function InvestMe() {
   const toastBg = notifType==="error"?"#ff3b30":notifType==="success"?"#34c759":"#0d1117";
 
   if (booting) return (
-    <div style={{...S.app,display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:dark?"#0d1117":"#fff"}}>
+    <div style={{...S.app,display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"#fff"}}>
       <style>{CSS}</style>
       <div style={{textAlign:"center"}}>
         <div style={{...S.lm,width:60,height:60,fontSize:30,margin:"0 auto 20px",borderRadius:16}}>I</div>
@@ -166,20 +92,18 @@ export default function InvestMe() {
     </div>
   );
 
-  const D = dark ? DK : {};
   return (
-    <div style={{...S.app,...D.app}}>
+    <div style={S.app}>
       <style>{CSS}</style>
       {notif && <div style={{...S.toast,background:toastBg}}>{notif}</div>}
-      {screen==="splash"   && <Splash setScreen={setScreen} dark={dark}/>}
-      {screen==="login"    && <Login login={login} setScreen={setScreen} dark={dark}/>}
-      {screen==="register" && <Register sb={sb} onDone={p=>{setMe(m=>({...m,...p}));setScreen("feed");notify("Welcome to InvestMe 🎉","success");}} setScreen={setScreen} notify={notify} dark={dark}/>}
-      {["feed","profile","messages","chat","watch","community","news","stocks","notifications","dashboard"].includes(screen) && me && (
+      {screen==="splash"   && <Splash setScreen={setScreen}/>}
+      {screen==="login"    && <Login login={login} setScreen={setScreen}/>}
+      {screen==="register" && <Register sb={sb} onDone={p=>{setMe(m=>({...m,...p}));setScreen("feed");notify("Welcome to InvestMe 🎉","success");}} setScreen={setScreen} notify={notify}/>}
+      {["feed","profile","messages","chat","watch","community","news","stocks"].includes(screen) && me && (
         <Shell me={me} setMe={setMe} screen={screen} setScreen={setScreen} logout={logout}
           watchTarget={watchTarget} setWatchTarget={setWatchTarget}
           chatTarget={chatTarget} setChatTarget={setChatTarget}
-          filterInd={filterInd} setFilterInd={setFilterInd} notify={notify}
-          dark={dark} toggleDark={toggleDark}/>
+          filterInd={filterInd} setFilterInd={setFilterInd} notify={notify}/>
       )}
     </div>
   );
@@ -291,29 +215,18 @@ function WebcamRecorder({setVideoBlob,notify}) {
 }
 
 // ─── SHELL ────────────────────────────────────────────────────────────────────
-function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chatTarget,setChatTarget,filterInd,setFilterInd,notify,dark,toggleDark}) {
+function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chatTarget,setChatTarget,filterInd,setFilterInd,notify}) {
   const [allUsers,setAllUsers]=useState([]);
   const [messages,setMessages]=useState([]);
   const [loadingUsers,setLoadingUsers]=useState(true);
-  const [notifications,setNotifications]=useState([]);
-  const D = dark ? DK : {};
 
   useEffect(()=>{sb.from("profiles").select("*").then(({data})=>{setAllUsers(data||[]);setLoadingUsers(false);});},[]);
   useEffect(()=>{
     if(!me)return;
     sb.from("messages").select("*").or(`from_id.eq.${me.id},to_id.eq.${me.id}`).order("created_at",{ascending:true}).then(({data})=>setMessages(data||[]));
-    const ch=sb.channel("msgs-"+me.id).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages",filter:`to_id=eq.${me.id}`},p=>{setMessages(prev=>[...prev,p.new]);setNotifications(prev=>[{id:Date.now(),type:"message",text:`New message from ${allUsers.find(u=>u.id===p.new.from_id)?.name||"someone"}`,ts:new Date().toISOString(),read:false},...prev]);}).subscribe();
+    const ch=sb.channel("msgs-"+me.id).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages",filter:`to_id=eq.${me.id}`},p=>setMessages(prev=>[...prev,p.new])).subscribe();
     return()=>sb.removeChannel(ch);
   },[me?.id]);
-
-  useEffect(()=>{
-    if(!me||!allUsers.length)return;
-    // Build notifications from follows
-    sb.from("follows").select("*").eq("following_id",me.id).order("created_at",{ascending:false}).limit(20).then(({data})=>{
-      const ns=(data||[]).map(f=>({id:f.id,type:"follow",text:`${allUsers.find(u=>u.id===f.follower_id)?.name||"Someone"} followed you`,ts:f.created_at,read:false}));
-      setNotifications(prev=>{const existing=prev.filter(n=>n.type!=="follow");return [...ns,...existing].slice(0,50);});
-    });
-  },[allUsers.length,me?.id]);
 
   async function sendMsg(toId,text){const {data,error}=await sb.from("messages").insert({from_id:me.id,to_id:toId,text,read:false}).select().single();if(!error&&data)setMessages(p=>[...p,data]);else if(error)notify("Failed to send","error");}
   function getConvo(a,b){return messages.filter(m=>(m.from_id===a&&m.to_id===b)||(m.from_id===b&&m.to_id===a));}
@@ -323,65 +236,39 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
   const relS=me.role==="investor"?startups.filter(s=>me.industries?.includes(s.industry)):startups;
   const displayS=filterInd==="All"?(me.role==="investor"?relS:startups):(me.role==="investor"?relS.filter(s=>s.industry===filterInd):startups.filter(s=>s.industry===filterInd));
 
-  const unreadNotifs=notifications.filter(n=>!n.read).length;
   const navItems=[
     {icon:"🏠",lbl:"Feed",s:"feed"},
     {icon:"📰",lbl:"News",s:"news"},
     {icon:"📈",lbl:"Markets",s:"stocks"},
     {icon:"🌐",lbl:"Community",s:"community"},
     {icon:"💬",lbl:"DMs",s:"messages",badge:unread},
-    {icon:"🔔",lbl:"Alerts",s:"notifications",badge:unreadNotifs},
     {icon:"👤",lbl:"Profile",s:"profile"},
   ];
 
   return (
-    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh",...D.app}}>
-      <header style={{...S.hdr,...D.hdr}}>
-        <div style={S.logoRow} onClick={()=>setScreen("feed")} className="cp"><div style={S.lm}>I</div><span style={{...S.lt,fontSize:20,...D.text}}>InvestMe</span></div>
-        <nav style={{display:"flex",gap:0,alignItems:"center"}}>
-          {navItems.map(n=>(<button key={n.s} style={{...S.nBtn,...((screen===n.s||(screen==="chat"&&n.s==="messages")||(screen==="watch"&&n.s==="feed")||(screen==="dashboard"&&n.s==="profile"))?{...S.nBtnOn,...D.nBtnOn}:{})}} onClick={()=>setScreen(n.s)}><span style={{position:"relative",fontSize:18}}>{n.icon}{n.badge>0&&<span style={S.badge}>{n.badge}</span>}</span><span style={{fontSize:8,color:(screen===n.s)?"#1a6cf5":dark?"#888":"#aaa"}}>{n.lbl}</span></button>))}
-          <button style={{...S.nBtn}} onClick={toggleDark}><span style={{fontSize:18}}>{dark?"☀️":"🌙"}</span><span style={{fontSize:8,color:dark?"#888":"#aaa"}}>{dark?"Light":"Dark"}</span></button>
-          <button style={S.nBtn} onClick={logout}><span style={{fontSize:18}}>↩️</span><span style={{fontSize:8,color:dark?"#888":"#aaa"}}>Out</span></button>
+    <div style={{display:"flex",flexDirection:"column",minHeight:"100vh"}}>
+      <header style={S.hdr}>
+        <div style={S.logoRow} onClick={()=>setScreen("feed")} className="cp"><div style={S.lm}>I</div><span style={{...S.lt,fontSize:20}}>InvestMe</span></div>
+        <nav style={{display:"flex",gap:0}}>
+          {navItems.map(n=>(<button key={n.s} style={{...S.nBtn,...((screen===n.s||(screen==="chat"&&n.s==="messages")||(screen==="watch"&&n.s==="feed"))?S.nBtnOn:{})}} onClick={()=>setScreen(n.s)}><span style={{position:"relative",fontSize:18}}>{n.icon}{n.badge>0&&<span style={S.badge}>{n.badge}</span>}</span><span style={{fontSize:8,color:(screen===n.s)?"#1a6cf5":"#aaa"}}>{n.lbl}</span></button>))}
+          <button style={S.nBtn} onClick={logout}><span style={{fontSize:18}}>↩️</span><span style={{fontSize:8,color:"#aaa"}}>Out</span></button>
         </nav>
       </header>
       <main style={{flex:1,overflowY:"auto"}}>
-        {screen==="feed"&&(loadingUsers?<Spinner/>:<Feed me={me} displayS={displayS} filterInd={filterInd} setFilterInd={setFilterInd} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} notify={notify} dark={dark}/>)}
-        {screen==="profile"&&<Profile me={me} setMe={setMe} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} allUsers={allUsers} notify={notify} dark={dark} setScreen2={setScreen}/>}
-        {screen==="messages"&&<Inbox peers={peers()} me={me} messages={messages} setChatTarget={setChatTarget} setScreen={setScreen} allUsers={allUsers} dark={dark}/>}
-        {screen==="chat"&&chatTarget&&<Chat me={me} peer={chatTarget} convo={getConvo(me.id,chatTarget.id)} sendMsg={sendMsg} setScreen={setScreen} dark={dark}/>}
-        {screen==="watch"&&watchTarget&&<Watch startup={watchTarget} me={me} setChatTarget={setChatTarget} setScreen={setScreen} dark={dark}/>}
-        {screen==="community"&&<Community me={me} allUsers={allUsers} notify={notify} dark={dark}/>}
-        {screen==="news"&&<NewsPage dark={dark}/>}
-        {screen==="stocks"&&<StocksPage dark={dark}/>}
-        {screen==="notifications"&&<NotificationsPage notifications={notifications} setNotifications={setNotifications} allUsers={allUsers} dark={dark} setScreen={setScreen} setChatTarget={setChatTarget}/>}
-        {screen==="dashboard"&&me.role==="investor"&&<InvestorDashboard me={me} allUsers={allUsers} messages={messages} dark={dark} setScreen={setScreen} setChatTarget={setChatTarget}/>}
-        {screen==="dashboard"&&me.role==="startup"&&<Profile me={me} setMe={setMe} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} allUsers={allUsers} notify={notify} dark={dark}/>}
+        {screen==="feed"&&(loadingUsers?<Spinner/>:<Feed me={me} displayS={displayS} filterInd={filterInd} setFilterInd={setFilterInd} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} notify={notify}/>)}
+        {screen==="profile"&&<Profile me={me} setMe={setMe} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} allUsers={allUsers} notify={notify}/>}
+        {screen==="messages"&&<Inbox peers={peers()} me={me} messages={messages} setChatTarget={setChatTarget} setScreen={setScreen} allUsers={allUsers}/>}
+        {screen==="chat"&&chatTarget&&<Chat me={me} peer={chatTarget} convo={getConvo(me.id,chatTarget.id)} sendMsg={sendMsg} setScreen={setScreen}/>}
+        {screen==="watch"&&watchTarget&&<Watch startup={watchTarget} me={me} setChatTarget={setChatTarget} setScreen={setScreen}/>}
+        {screen==="community"&&<Community me={me} allUsers={allUsers} notify={notify}/>}
+        {screen==="news"&&<NewsPage/>}
+        {screen==="stocks"&&<StocksPage/>}
       </main>
     </div>
   );
 }
 
 // ─── FEED ─────────────────────────────────────────────────────────────────────
-function FundraisingBar({raised,goal,dark}) {
-  const pct = Math.min(Math.round((raised/goal)*100),100);
-  const fmtM = v => v>=1000000?`$${(v/1000000).toFixed(1)}M`:v>=1000?`$${(v/1000).toFixed(0)}K`:`$${v}`;
-  return (
-    <div style={{marginBottom:4}}>
-      <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-        <span style={{fontSize:12,fontWeight:700,color:"#1a6cf5"}}>💰 Raising {fmtM(goal)}</span>
-        <span style={{fontSize:12,fontWeight:700,color:pct>=100?"#34c759":"#ff9500"}}>{pct}% funded</span>
-      </div>
-      <div style={{height:8,borderRadius:8,background:dark?"#2a2a2a":"#e8edf5",overflow:"hidden"}}>
-        <div style={{height:"100%",width:`${pct}%`,borderRadius:8,background:pct>=100?"#34c759":pct>=50?"#1a6cf5":"#ff9500",transition:"width .6s ease"}}/>
-      </div>
-      <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-        <span style={{fontSize:11,color:dark?"#888":"#aaa"}}>Raised: {fmtM(raised)}</span>
-        <span style={{fontSize:11,color:dark?"#888":"#aaa"}}>Goal: {fmtM(goal)}</span>
-      </div>
-    </div>
-  );
-}
-
 function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setChatTarget,notify}) {
   const [likedMap,setLikedMap]=useState({});
   const [likeCounts,setLikeCounts]=useState({});
@@ -404,13 +291,13 @@ function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setCh
 
   return (
     <div style={{paddingBottom:40}}>
-      <div style={{padding:"12px 14px 4px"}}><div style={{position:"relative"}}><span style={{position:"absolute",left:13,top:"50%",transform:"translateY(-50%)",fontSize:15,pointerEvents:"none"}}>🔍</span><input style={{...S.inp,...(dark?DK.inp:{}),paddingLeft:38,borderRadius:24,background:dark?"#1c2333":"#f5f7fa",border:dark?"1.5px solid #30363d":"1.5px solid #eee"}} placeholder="Search pitches, industries…" value={search} onChange={e=>setSearch(e.target.value)}/>{search&&<button style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",fontSize:15,color:"#aaa"}} onClick={()=>setSearch("")}>✕</button>}</div></div>
-      <div style={S.fBar}>{["All",...INDUSTRIES].map(ind=>(<button key={ind} style={{...S.fChip,...(dark?DK.fChip:{}),...(filterInd===ind?S.fChipOn:{})}} onClick={()=>setFilterInd(ind)}>{ind!=="All"&&ICONS[ind]} {ind}</button>))}</div>
+      <div style={{padding:"12px 14px 4px"}}><div style={{position:"relative"}}><span style={{position:"absolute",left:13,top:"50%",transform:"translateY(-50%)",fontSize:15,pointerEvents:"none"}}>🔍</span><input style={{...S.inp,paddingLeft:38,borderRadius:24,background:"#f5f7fa",border:"1.5px solid #eee"}} placeholder="Search pitches, industries…" value={search} onChange={e=>setSearch(e.target.value)}/>{search&&<button style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",fontSize:15,color:"#aaa"}} onClick={()=>setSearch("")}>✕</button>}</div></div>
+      <div style={S.fBar}>{["All",...INDUSTRIES].map(ind=>(<button key={ind} style={{...S.fChip,...(filterInd===ind?S.fChipOn:{})}} onClick={()=>setFilterInd(ind)}>{ind!=="All"&&ICONS[ind]} {ind}</button>))}</div>
       {me.role==="investor"&&filterInd==="All"&&<div style={S.hint}>Showing: {me.industries?.map(i=>`${ICONS[i]} ${i}`).join(" · ")}</div>}
       <div style={{padding:"0 14px",display:"flex",flexDirection:"column",gap:16}}>
         {filtered.length===0&&<p style={{textAlign:"center",color:"#ccc",padding:"60px 0",fontSize:15}}>{search?"No results found 🔍":"No pitches here yet."}</p>}
         {filtered.map(s=>(
-          <div key={s.id} style={{...S.card,...(dark?DK.card:{})}} className="card">
+          <div key={s.id} style={S.card} className="card">
             <div style={{position:"relative",cursor:"pointer"}} onClick={()=>openWatch(s)}>
               <img src={s.video_thumb||`https://picsum.photos/seed/${s.id}/400/300`} alt={s.pitch_title} style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}}/>
               <div style={S.playBtn}>▶</div>
@@ -420,13 +307,12 @@ function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setCh
             <div style={{padding:"14px 16px 16px"}}>
               <div style={{display:"flex",alignItems:"center",marginBottom:10}}>
                 <Av src={s.avatar_url} name={s.name} size={38}/>
-                <div style={{marginLeft:10,flex:1}}><div style={{fontWeight:700,fontSize:14,color:dark?"#e0e0e0":"#0d1117"}}>{s.name}</div><div style={{color:dark?"#888":"#aaa",fontSize:12}}>{s.industry}</div></div>
+                <div style={{marginLeft:10,flex:1}}><div style={{fontWeight:700,fontSize:14}}>{s.name}</div><div style={{color:"#aaa",fontSize:12}}>{s.industry}</div></div>
                 {me.id!==s.id&&<button style={{...S.smBtn,background:followMap[s.id]?"#e8f5e9":"#f0f5ff",color:followMap[s.id]?"#34c759":"#1a6cf5",border:followMap[s.id]?"1.5px solid #34c759":"1.5px solid transparent"}} onClick={()=>toggleFollow(s.id)}>{followMap[s.id]?"✓ Following":"+ Follow"}</button>}
               </div>
-              <p style={{margin:"0 0 4px",fontWeight:700,fontSize:15,color:dark?"#e0e0e0":"#0d1117"}}>{s.pitch_title||s.name}</p>
-              <p style={{margin:"0 0 8px",color:dark?"#888":"#666",fontSize:13,lineHeight:1.5}}>{s.bio}</p>
-              {s.raise_goal>0&&<FundraisingBar raised={s.raise_raised||0} goal={s.raise_goal} dark={dark}/>}
-              <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
+              <p style={{margin:"0 0 4px",fontWeight:700,fontSize:15}}>{s.pitch_title||s.name}</p>
+              <p style={{margin:"0 0 12px",color:"#666",fontSize:13,lineHeight:1.5}}>{s.bio}</p>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <button style={S.aBtn} onClick={()=>toggleLike(s.id)}>{likedMap[s.id]?"❤️":"🤍"} {likeCounts[s.id]||s.likes||0}</button>
                 <button style={S.aBtn}>👁 {s.views||0}</button>
                 {me.role==="investor"&&<button style={{...S.aBtn,marginLeft:"auto",background:"#f0f5ff",color:"#1a6cf5",padding:"6px 14px",borderRadius:20,fontWeight:700}} onClick={()=>{setChatTarget(s);setScreen("chat");}}>💬 Message</button>}
@@ -450,8 +336,7 @@ function Watch({startup,me,setChatTarget,setScreen}) {
         <div style={{padding:"16px 20px 20px"}}>
           <div style={{display:"flex",alignItems:"center",marginBottom:12}}><Av src={startup.avatar_url} name={startup.name} size={50}/><div style={{marginLeft:12}}><div style={{fontWeight:700,fontSize:17}}>{startup.name}</div><div style={{color:"#1a6cf5",fontSize:13}}>{ICONS[startup.industry]} {startup.industry}</div></div></div>
           <h2 style={{margin:"0 0 8px",fontSize:19,fontWeight:800}}>{startup.pitch_title}</h2>
-          <p style={{color:"#555",lineHeight:1.6,margin:"0 0 10px"}}>{startup.bio}</p>
-          {startup.raise_goal>0&&<div style={{marginBottom:14}}><FundraisingBar raised={startup.raise_raised||0} goal={startup.raise_goal}/></div>}
+          <p style={{color:"#555",lineHeight:1.6,margin:"0 0 16px"}}>{startup.bio}</p>
           <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
             <button style={S.aBtn} onClick={()=>setLiked(!liked)}>{liked?"❤️":"🤍"} {(startup.likes||0)+(liked?1:0)}</button>
             <button style={S.aBtn}>👁 {startup.views||0}</button>
@@ -463,7 +348,7 @@ function Watch({startup,me,setChatTarget,setScreen}) {
   );
 }
 
-function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notify,dark}) {
+function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notify}) {
   const [editing,setEditing]=useState(false);
   const [editBio,setEditBio]=useState(me.bio||"");
   const [editIndustry,setEditIndustry]=useState(me.industry||"");
@@ -471,8 +356,6 @@ function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notif
   const [editName,setEditName]=useState(me.name||"");
   const [saving,setSaving]=useState(false);
   const [uploadingAvatar,setUploadingAvatar]=useState(false);
-  const [editRaiseGoal,setEditRaiseGoal]=useState(me.raise_goal||0);
-  const [editRaiseRaised,setEditRaiseRaised]=useState(me.raise_raised||0);
   const avatarRef=useRef();
   const isS=me.role==="startup";
   const investors=allUsers.filter(u=>u.role==="investor");
@@ -483,7 +366,7 @@ function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notif
     if(!editName.trim()){notify("Name required","error");return;}
     if(!wcOk){notify("Bio exceeds 250 words","error");return;}
     setSaving(true);
-    const updates={name:editName,bio:editBio,industry:isS?editIndustry:null,industries:!isS?editIndustries:(me.industries||[]),raise_goal:isS?Number(editRaiseGoal)||0:0,raise_raised:isS?Number(editRaiseRaised)||0:0};
+    const updates={name:editName,bio:editBio,industry:isS?editIndustry:null,industries:!isS?editIndustries:(me.industries||[])};
     const {error}=await sb.from("profiles").update(updates).eq("id",me.id);
     if(error)notify("❌ Save failed","error");
     else{setMe(m=>({...m,...updates}));notify("Profile updated ✅","success");setEditing(false);}
@@ -506,8 +389,8 @@ function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notif
   }
 
   return (
-    <div style={{padding:"20px 16px 80px",background:dark?"#0d1117":"#fafafa",minHeight:"100vh"}}>
-      <div style={{background:dark?"#161b22":"#fff",borderRadius:18,padding:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)",marginBottom:20}}>
+    <div style={{padding:"20px 16px 80px"}}>
+      <div style={{background:"#fff",borderRadius:18,padding:20,boxShadow:"0 2px 12px rgba(0,0,0,0.05)",marginBottom:20}}>
         <div style={{display:"flex",alignItems:"flex-start",marginBottom:16}}>
           <div style={{position:"relative",flexShrink:0}}>
             <Av src={me.avatar_url} name={me.name} size={80}/>
@@ -517,12 +400,12 @@ function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notif
             <input ref={avatarRef} type="file" accept="image/*" style={{display:"none"}} onChange={uploadAvatar}/>
           </div>
           <div style={{marginLeft:14,flex:1}}>
-            {!editing?<><h2 style={{margin:"0 0 4px",fontSize:20,fontWeight:800}}>{me.name}</h2>{me.firm&&<p style={{margin:"0 0 4px",color:"#1a6cf5",fontWeight:600,fontSize:14}}>{me.firm}</p>}<p style={{margin:"0 0 10px",color:"#666",fontSize:13,lineHeight:1.5}}>{me.bio||"No bio yet."}</p><div style={{display:"flex",flexWrap:"wrap",gap:6}}><span style={{background:"#f5f7fa",borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:600}}>{isS?"🚀 Startup":"💼 Investor"}</span>{isS&&me.industry&&<span style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:600}}>{ICONS[me.industry]} {me.industry}</span>}</div>{isS&&me.raise_goal>0&&<div style={{marginTop:12}}><FundraisingBar raised={me.raise_raised||0} goal={me.raise_goal}/></div>}</>
+            {!editing?<><h2 style={{margin:"0 0 4px",fontSize:20,fontWeight:800}}>{me.name}</h2>{me.firm&&<p style={{margin:"0 0 4px",color:"#1a6cf5",fontWeight:600,fontSize:14}}>{me.firm}</p>}<p style={{margin:"0 0 10px",color:"#666",fontSize:13,lineHeight:1.5}}>{me.bio||"No bio yet."}</p><div style={{display:"flex",flexWrap:"wrap",gap:6}}><span style={{background:"#f5f7fa",borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:600}}>{isS?"🚀 Startup":"💼 Investor"}</span>{isS&&me.industry&&<span style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:600}}>{ICONS[me.industry]} {me.industry}</span>}</div></>
             :<input style={{...S.inp,marginBottom:8,fontSize:15,fontWeight:700}} value={editName} onChange={e=>setEditName(e.target.value)} placeholder="Your name"/>}
           </div>
         </div>
         {editing&&<><div style={{position:"relative",marginBottom:8}}><textarea style={{...S.inp,height:90,resize:"none",paddingBottom:24,borderColor:!wcOk?"#ff3b30":undefined}} placeholder="Bio (max 250 words)" value={editBio} onChange={e=>{if(countWords(e.target.value)<=255)setEditBio(e.target.value);}}/><span style={{position:"absolute",bottom:9,right:12,fontSize:11,color:!wcOk?"#ff3b30":wc>220?"#ff9500":"#bbb"}}>{wc}/250</span></div>{isS&&<><p style={{margin:"4px 0 8px",fontWeight:600,fontSize:13}}>Industry</p><div style={{...S.indGrid,maxHeight:160,marginBottom:12}}>{INDUSTRIES.map(ind=>(<div key={ind} style={{...S.iChip,...(editIndustry===ind?S.iChipOn:{})}} onClick={()=>setEditIndustry(ind)}>{ICONS[ind]} {ind}</div>))}</div></>}{!isS&&<><p style={{margin:"4px 0 8px",fontWeight:600,fontSize:13}}>Industries you invest in</p><div style={{...S.indGrid,maxHeight:160,marginBottom:12}}>{INDUSTRIES.map(ind=>(<div key={ind} style={{...S.iChip,...(editIndustries.includes(ind)?S.iChipOn:{})}} onClick={()=>togInd(ind)}>{ICONS[ind]} {ind}</div>))}</div></>}<div style={{display:"flex",gap:10}}><button style={{...S.btnG,flex:1}} onClick={()=>{setEditing(false);setEditName(me.name);setEditBio(me.bio||"");setEditIndustry(me.industry||"");setEditIndustries(me.industries||[]);}}>Cancel</button><button style={{...S.btnP,flex:2,opacity:saving?0.7:1}} disabled={saving} onClick={saveProfile}>{saving?"Saving…":"Save Changes ✅"}</button></div></>}
-        {!editing&&<div style={{display:"flex",gap:10,marginTop:8}}><button style={{...S.btnG,flex:2,padding:"9px 0",fontSize:13}} onClick={()=>setEditing(true)}>✏️ Edit Profile</button>{!isS&&<button style={{...S.btnG,flex:1,padding:"9px 0",fontSize:13}} onClick={()=>setScreen("dashboard")}>📊 Dashboard</button>}</div>}
+        {!editing&&<button style={{...S.btnG,marginTop:8,padding:"9px 0",fontSize:13}} onClick={()=>setEditing(true)}>✏️ Edit Profile</button>}
       </div>
       {isS&&<><h3 style={S.secT}>My Pitch</h3><div style={{...S.card,marginBottom:20,cursor:"pointer"}} onClick={()=>{setWatchTarget(me);setScreen("watch");}}><img src={me.video_thumb||`https://picsum.photos/seed/${me.id}/400/220`} alt="pitch" style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}}/><div style={{padding:"12px 16px"}}><p style={{margin:0,fontWeight:700}}>{me.pitch_title||"My Pitch"}</p></div></div><h3 style={S.secT}>Find Investors</h3>{investors.map(inv=>(<div key={inv.id} style={{...S.card,padding:"14px 16px",display:"flex",alignItems:"center",marginBottom:10}}><Av src={inv.avatar_url} name={inv.name} size={48}/><div style={{marginLeft:12,flex:1}}><div style={{fontWeight:700}}>{inv.name}</div>{inv.firm&&<div style={{color:"#1a6cf5",fontSize:13}}>{inv.firm}</div>}<div style={{color:"#aaa",fontSize:12,marginTop:2}}>{inv.industries?.map(i=>ICONS[i]).join(" ")}</div></div><button style={S.smBtn} onClick={()=>{setChatTarget(inv);setScreen("chat");}}>Message</button></div>))}</>}
       {!isS&&<><h3 style={S.secT}>Your focus areas</h3><div style={{display:"flex",flexWrap:"wrap",gap:8}}>{me.industries?.map(ind=>(<span key={ind} style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"6px 14px",fontSize:13,fontWeight:600}}>{ICONS[ind]} {ind}</span>))}</div></>}
@@ -582,7 +465,7 @@ function Community({me,allUsers,notify}) {
         {showNew&&(<div style={{background:"#fff",borderRadius:16,padding:16,boxShadow:"0 2px 14px rgba(0,0,0,0.06)",marginBottom:16}}><h3 style={{margin:"0 0 12px",fontSize:16,fontWeight:800}}>New Post</h3><input style={{...S.inp,marginBottom:10}} placeholder="Title *" value={newTitle} onChange={e=>setNewTitle(e.target.value)}/><textarea style={{...S.inp,height:100,resize:"none",marginBottom:10}} placeholder="Share your thoughts…" value={newBody} onChange={e=>setNewBody(e.target.value)}/><div style={{display:"flex",gap:10}}><button style={{...S.btnG,flex:1}} onClick={()=>{setShowNew(false);setNewTitle("");setNewBody("");}}>Cancel</button><button style={{...S.btnP,flex:2,opacity:posting?0.7:1}} disabled={posting} onClick={submitPost}>{posting?"Posting…":"Post 🚀"}</button></div></div>)}
         {loading&&<Spinner/>}
         {!loading&&posts.length===0&&<p style={{textAlign:"center",color:"#ccc",padding:"40px 0"}}>No posts yet. Be the first! 🌟</p>}
-        {!loading&&posts.map(post=>{const author=getAuthor(post.author_id);return(<div key={post.id} style={{background:dark?"#161b22":"#fff",borderRadius:16,boxShadow:"0 2px 10px rgba(0,0,0,0.05)",marginBottom:12,overflow:"hidden"}}><div style={{padding:"14px 16px",cursor:"pointer"}} onClick={()=>setOpenPost(post)}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Av src={author?.avatar_url} name={author?.name||"?"} size={32}/><div><div style={{fontWeight:600,fontSize:13}}>{author?.name||"Unknown"}</div><div style={{color:"#bbb",fontSize:11}}>{timeAgo(post.created_at)}</div></div></div><h3 style={{margin:"0 0 6px",fontSize:15,fontWeight:700,color:dark?"#e0e0e0":"#0d1117"}}>{post.title}</h3><p style={{margin:0,color:dark?"#888":"#666",fontSize:13,lineHeight:1.5,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{post.body}</p></div><div style={{display:"flex",gap:8,padding:"8px 16px 12px",borderTop:"1px solid #f5f5f5"}}><button style={{display:"flex",alignItems:"center",gap:5,background:upvotedMap[post.id]?"#f0f5ff":"#f5f7fa",border:upvotedMap[post.id]?"1.5px solid #1a6cf5":"1.5px solid #eee",borderRadius:20,padding:"5px 12px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:13,color:upvotedMap[post.id]?"#1a6cf5":"#666"}} onClick={()=>toggleUpvote(post.id)}>▲ {upvoteCounts[post.id]||0}</button><button style={{display:"flex",alignItems:"center",gap:5,background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"5px 12px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13,color:"#666"}} onClick={()=>setOpenPost(post)}>💬 Comments</button></div></div>);})}
+        {!loading&&posts.map(post=>{const author=getAuthor(post.author_id);return(<div key={post.id} style={{background:"#fff",borderRadius:16,boxShadow:"0 2px 10px rgba(0,0,0,0.05)",marginBottom:12,overflow:"hidden"}}><div style={{padding:"14px 16px",cursor:"pointer"}} onClick={()=>setOpenPost(post)}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Av src={author?.avatar_url} name={author?.name||"?"} size={32}/><div><div style={{fontWeight:600,fontSize:13}}>{author?.name||"Unknown"}</div><div style={{color:"#bbb",fontSize:11}}>{timeAgo(post.created_at)}</div></div></div><h3 style={{margin:"0 0 6px",fontSize:15,fontWeight:700}}>{post.title}</h3><p style={{margin:0,color:"#666",fontSize:13,lineHeight:1.5,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{post.body}</p></div><div style={{display:"flex",gap:8,padding:"8px 16px 12px",borderTop:"1px solid #f5f5f5"}}><button style={{display:"flex",alignItems:"center",gap:5,background:upvotedMap[post.id]?"#f0f5ff":"#f5f7fa",border:upvotedMap[post.id]?"1.5px solid #1a6cf5":"1.5px solid #eee",borderRadius:20,padding:"5px 12px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:13,color:upvotedMap[post.id]?"#1a6cf5":"#666"}} onClick={()=>toggleUpvote(post.id)}>▲ {upvoteCounts[post.id]||0}</button><button style={{display:"flex",alignItems:"center",gap:5,background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"5px 12px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13,color:"#666"}} onClick={()=>setOpenPost(post)}>💬 Comments</button></div></div>);})}
       </div>
     </div>
   );
@@ -607,96 +490,80 @@ function PostDetail({post,me,allUsers,onBack,notify,upvoted,upvoteCount,toggleUp
   );
 }
 
+
 // ─── NEWS PAGE ────────────────────────────────────────────────────────────────
-function NewsPage({dark=false}) {
+function NewsPage() {
   const [tab, setTab] = useState("politics");
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState(null);
 
   const tabs = [
-    { id:"politics", label:"🌍 Politics",  q:"international politics world" },
-    { id:"tech",     label:"🤖 Tech & AI", q:"artificial intelligence technology" },
-    { id:"finance",  label:"💰 Finance",   q:"financial markets economy stocks" },
-    { id:"startup",  label:"🚀 Startups",  q:"startup venture capital funding" },
+    {id:"politics", label:"🌍 Politics"},
+    {id:"tech",     label:"🤖 Tech & AI"},
+    {id:"finance",  label:"💰 Finance"},
+    {id:"startup",  label:"🚀 Startups"},
   ];
 
-  useEffect(() => { fetchNews(); }, [tab]);
+  const feedMap = {
+    politics: "https://feeds.bbci.co.uk/news/world/rss.xml",
+    tech:     "https://feeds.feedburner.com/TechCrunch",
+    finance:  "https://feeds.marketwatch.com/marketwatch/topstories/",
+    startup:  "https://techcrunch.com/category/startups/feed/",
+  };
+
+  useEffect(()=>{ fetchNews(); }, [tab]);
 
   async function fetchNews() {
     setLoading(true);
-    const current = tabs.find(t => t.id === tab);
+    setArticles([]);
     try {
-      const res = await fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(current.q)}&lang=en&max=15&sortby=publishedAt&apikey=pub_65d14e2b8e3f4a1c9d7b2f0e8a3c6d4f`);
+      const url = "https://api.allorigins.win/get?url=" + encodeURIComponent(feedMap[tab]);
+      const res = await fetch(url);
       const data = await res.json();
-      if (data.articles && data.articles.length > 0) {
-        setArticles(data.articles.filter(a => a.title && a.image));
-        setLastUpdated(new Date());
-      } else {
-        await fetchRSS(current);
-      }
+      if (!data.contents) { setLoading(false); return; }
+      const parser = new window.DOMParser();
+      const xml = parser.parseFromString(data.contents, "text/xml");
+      const items = Array.from(xml.querySelectorAll("item")).slice(0, 15);
+      const sourceName = xml.querySelector("channel > title")?.textContent || "News";
+      const parsed = items.map((item, idx) => {
+        const encImg = item.querySelector("enclosure")?.getAttribute("url");
+        const desc = item.querySelector("description")?.textContent || "";
+        const imgMatch = desc.match(/<img[^>]+src=["'](https?:[^"']+)["']/);
+        return {
+          title: (item.querySelector("title")?.textContent||"").replace(/<!\[CDATA\[|\]\]>/g,"").trim(),
+          description: desc.replace(/<[^>]+>/g,"").trim(),
+          url: (item.querySelector("link")?.textContent||"").trim() || "#",
+          image: encImg || (imgMatch ? imgMatch[1] : null) || ("https://picsum.photos/seed/"+tab+idx+"/400/220"),
+          source: sourceName,
+          pubDate: item.querySelector("pubDate")?.textContent || "",
+        };
+      }).filter(a => a.title.length > 5);
+      setArticles(parsed);
     } catch(e) {
-      await fetchRSS(current);
+      setArticles([]);
     }
     setLoading(false);
   }
 
-  async function fetchRSS(current) {
-    const feedMap = {
-      politics: ["https://feeds.bbci.co.uk/news/world/rss.xml","https://rss.nytimes.com/services/xml/rss/nyt/World.xml"],
-      tech:     ["https://feeds.feedburner.com/TechCrunch","https://www.wired.com/feed/rss"],
-      finance:  ["https://feeds.marketwatch.com/marketwatch/topstories/","https://www.cnbc.com/id/10000664/device/rss/rss.html"],
-      startup:  ["https://techcrunch.com/category/startups/feed/","https://feeds.feedburner.com/venturebeat/SZYF"],
-    };
-    const feedList = feedMap[current.id] || feedMap.politics;
-    for (const feed of feedList) {
-      try {
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(feed)}`);
-        const data = await res.json();
-        if (!data.contents) continue;
-        const parser = new window.DOMParser();
-        const xml = parser.parseFromString(data.contents, "text/xml");
-        const items = Array.from(xml.querySelectorAll("item")).slice(0, 15);
-        if (items.length === 0) continue;
-        const sourceName = xml.querySelector("channel > title")?.textContent || "News";
-        const parsed = items.map((item, idx) => {
-          const encImg = item.querySelector("enclosure")?.getAttribute("url");
-          const descHtml = item.querySelector("description")?.textContent || "";
-          const imgMatch = descHtml.match(/<img[^>]+src=["'](https?:[^"']+)["']/);
-          return {
-            title: item.querySelector("title")?.textContent?.replace(/<!\[CDATA\[|\]\]>/g,"").trim() || "",
-            description: descHtml.replace(/<[^>]+>/g,"").trim(),
-            url: item.querySelector("link")?.textContent?.trim() || "#",
-            image: encImg || (imgMatch ? imgMatch[1] : null) || `https://picsum.photos/seed/${current.id}${idx}/400/220`,
-            source: { name: sourceName },
-            publishedAt: item.querySelector("pubDate")?.textContent || new Date().toISOString(),
-          };
-        }).filter(a => a.title && a.title.length > 5);
-        if (parsed.length > 0) { setArticles(parsed); setLastUpdated(new Date()); return; }
-      } catch(e) { continue; }
-    }
-    setArticles([]);
-  }
-
-  function formatDate(str) {
-    const d = new Date(str);
-    return d.toLocaleDateString("en-US",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  function fmtDate(str) {
+    try { return new Date(str).toLocaleDateString("en-US",{month:"short",day:"numeric"}); }
+    catch(e) { return ""; }
   }
 
   return (
-    <div style={{paddingBottom:80,background:dark?"#0d1117":"#fafafa",minHeight:"100vh"}}>
+    <div style={{paddingBottom:80}}>
       <div style={{background:"linear-gradient(135deg,#0d1117,#1a2744)",padding:"20px 16px 16px",color:"#fff"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
             <h2 style={{margin:"0 0 4px",fontSize:20,fontWeight:800}}>📰 News</h2>
-            <p style={{margin:0,fontSize:12,opacity:0.6}}>{lastUpdated?"Updated "+lastUpdated.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}):"Loading…"}</p>
+            <p style={{margin:0,fontSize:12,opacity:0.6}}>Live updates</p>
           </div>
           <button style={{background:"rgba(255,255,255,0.12)",border:"none",color:"#fff",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={fetchNews}>🔄 Refresh</button>
         </div>
       </div>
-      <div style={{display:"flex",overflowX:"auto",background:dark?"#161b22":"#fff",borderBottom:`2px solid ${dark?"#21262d":"#f0f0f0"}`,scrollbarWidth:"none"}}>
-        {tabs.map(t => (
-          <button key={t.id} style={{flexShrink:0,padding:"12px 16px",border:"none",background:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:13,color:tab===t.id?"#1a6cf5":dark?"#888":"#aaa",borderBottom:tab===t.id?"3px solid #1a6cf5":"3px solid transparent",whiteSpace:"nowrap"}} onClick={()=>setTab(t.id)}>
+      <div style={{display:"flex",overflowX:"auto",background:"#fff",borderBottom:"2px solid #f0f0f0",scrollbarWidth:"none"}}>
+        {tabs.map(t=>(
+          <button key={t.id} style={{flexShrink:0,padding:"12px 16px",border:"none",background:"none",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:13,color:tab===t.id?"#1a6cf5":"#aaa",borderBottom:tab===t.id?"3px solid #1a6cf5":"3px solid transparent",whiteSpace:"nowrap"}} onClick={()=>setTab(t.id)}>
             {t.label}
           </button>
         ))}
@@ -706,39 +573,38 @@ function NewsPage({dark=false}) {
         {!loading && articles.length===0 && (
           <div style={{textAlign:"center",padding:"60px 20px"}}>
             <p style={{fontSize:32,margin:"0 0 12px"}}>📭</p>
-            <p style={{color:dark?"#666":"#aaa",fontSize:14}}>No articles found right now.</p>
+            <p style={{color:"#aaa",fontSize:14}}>No articles right now.</p>
             <button style={{...S.btnP,width:"auto",padding:"10px 24px",marginTop:8}} onClick={fetchNews}>Try Again</button>
           </div>
         )}
         {!loading && articles.length>0 && (
           <div>
             <a href={articles[0].url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>
-              <div style={{...S.card,background:dark?"#161b22":"#fff",marginBottom:14,cursor:"pointer"}} className="card">
+              <div style={{...S.card,marginBottom:14,cursor:"pointer"}} className="card">
                 <div style={{position:"relative"}}>
-                  <img src={articles[0].image||articles[0].urlToImage} alt={articles[0].title} style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}} onError={e=>e.target.style.display="none"}/>
+                  <img src={articles[0].image} alt={articles[0].title} style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}} onError={e=>{e.target.style.display="none";}}/>
                   <div style={{position:"absolute",top:10,left:10,background:"#1a6cf5",color:"#fff",borderRadius:20,padding:"3px 10px",fontSize:10,fontWeight:700}}>⭐ TOP STORY</div>
                 </div>
                 <div style={{padding:"14px 16px"}}>
                   <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
-                    <span style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:700}}>{articles[0].source?.name}</span>
-                    <span style={{color:dark?"#888":"#bbb",fontSize:11}}>{formatDate(articles[0].publishedAt)}</span>
+                    <span style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:700}}>{articles[0].source}</span>
+                    <span style={{color:"#bbb",fontSize:11}}>{fmtDate(articles[0].pubDate)}</span>
                   </div>
-                  <h3 style={{margin:"0 0 8px",fontSize:16,fontWeight:800,lineHeight:1.4,color:dark?"#e0e0e0":"#0d1117"}}>{articles[0].title}</h3>
-                  <p style={{margin:0,color:dark?"#888":"#666",fontSize:13,lineHeight:1.55,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{articles[0].description}</p>
+                  <h3 style={{margin:"0 0 8px",fontSize:16,fontWeight:800,lineHeight:1.4,color:"#0d1117"}}>{articles[0].title}</h3>
+                  <p style={{margin:0,color:"#666",fontSize:13,lineHeight:1.55,display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{articles[0].description}</p>
                 </div>
               </div>
             </a>
-            {articles.slice(1).map((article,i) => (
+            {articles.slice(1).map((article,i)=>(
               <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>
-                <div style={{background:dark?"#161b22":"#fff",borderRadius:14,boxShadow:"0 1px 8px rgba(0,0,0,0.05)",marginBottom:10,display:"flex",gap:12,padding:12,cursor:"pointer",overflow:"hidden"}} className="card">
-                  {(article.image||article.urlToImage)&&<img src={article.image||article.urlToImage} alt={article.title} style={{width:80,height:80,objectFit:"cover",borderRadius:10,flexShrink:0}} onError={e=>e.target.style.display="none"}/>}
+                <div style={{background:"#fff",borderRadius:14,boxShadow:"0 1px 8px rgba(0,0,0,0.05)",marginBottom:10,display:"flex",gap:12,padding:12,overflow:"hidden"}} className="card">
+                  {article.image && <img src={article.image} alt={article.title} style={{width:80,height:80,objectFit:"cover",borderRadius:10,flexShrink:0}} onError={e=>{e.target.style.display="none";}}/>}
                   <div style={{flex:1,minWidth:0}}>
                     <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
-                      <span style={{color:"#1a6cf5",fontSize:11,fontWeight:700}}>{article.source?.name}</span>
-                      <span style={{color:dark?"#555":"#ddd",fontSize:10}}>·</span>
-                      <span style={{color:dark?"#888":"#bbb",fontSize:11}}>{formatDate(article.publishedAt)}</span>
+                      <span style={{color:"#1a6cf5",fontSize:11,fontWeight:700}}>{article.source}</span>
+                      <span style={{color:"#bbb",fontSize:11}}>{fmtDate(article.pubDate)}</span>
                     </div>
-                    <p style={{margin:0,fontWeight:700,fontSize:13,lineHeight:1.4,color:dark?"#e0e0e0":"#0d1117",display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{article.title}</p>
+                    <p style={{margin:0,fontWeight:700,fontSize:13,lineHeight:1.4,color:"#0d1117",display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{article.title}</p>
                   </div>
                 </div>
               </a>
@@ -750,27 +616,29 @@ function NewsPage({dark=false}) {
   );
 }
 
-function StocksPage({dark=false}) {
+// ─── STOCKS PAGE ──────────────────────────────────────────────────────────────
+function StocksPage() {
   const INDICES = [
-    { symbol:"SPY", name:"S&P 500",    icon:"🇺🇸", color:"#1a6cf5" },
-    { symbol:"QQQ", name:"Nasdaq 100", icon:"💻",  color:"#7c3aed" },
-    { symbol:"DIA", name:"Dow Jones",  icon:"🏭",  color:"#0891b2" },
+    { symbol:"SPY",  name:"S&P 500",    icon:"🇺🇸", color:"#1a6cf5" },
+    { symbol:"QQQ",  name:"Nasdaq 100", icon:"💻", color:"#7c3aed" },
+    { symbol:"DIA",  name:"Dow Jones",  icon:"🏭", color:"#0891b2" },
   ];
   const WATCHLIST = [
-    { symbol:"AAPL",  name:"Apple",     icon:"🍎" },
-    { symbol:"MSFT",  name:"Microsoft", icon:"🪟" },
-    { symbol:"GOOGL", name:"Alphabet",  icon:"🔍" },
-    { symbol:"AMZN",  name:"Amazon",    icon:"📦" },
-    { symbol:"NVDA",  name:"NVIDIA",    icon:"🎮" },
-    { symbol:"TSLA",  name:"Tesla",     icon:"🚗" },
-    { symbol:"META",  name:"Meta",      icon:"👁️" },
-    { symbol:"NFLX",  name:"Netflix",   icon:"🎬" },
+    { symbol:"AAPL",  name:"Apple",       icon:"🍎" },
+    { symbol:"MSFT",  name:"Microsoft",   icon:"🪟" },
+    { symbol:"GOOGL", name:"Alphabet",    icon:"🔍" },
+    { symbol:"AMZN",  name:"Amazon",      icon:"📦" },
+    { symbol:"NVDA",  name:"NVIDIA",      icon:"🎮" },
+    { symbol:"TSLA",  name:"Tesla",       icon:"🚗" },
+    { symbol:"META",  name:"Meta",        icon:"👁️" },
+    { symbol:"NFLX",  name:"Netflix",     icon:"🎬" },
   ];
 
   const [quotes, setQuotes] = useState({});
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [marketStatus, setMarketStatus] = useState(null);
+
   const allSymbols = [...INDICES.map(i=>i.symbol), ...WATCHLIST.map(w=>w.symbol)];
 
   useEffect(() => { fetchAll(); }, []);
@@ -778,13 +646,18 @@ function StocksPage({dark=false}) {
   async function fetchAll() {
     setLoading(true);
     try {
+      // Fetch market status
       const msRes = await fetch(`https://finnhub.io/api/v1/stock/market-status?exchange=US&token=${FINNHUB_KEY}`);
       const msData = await msRes.json();
       setMarketStatus(msData);
+
+      // Fetch all quotes in parallel
       const results = await Promise.all(
         allSymbols.map(sym =>
           fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${FINNHUB_KEY}`)
-            .then(r => r.json()).then(d => ({symbol:sym,...d})).catch(() => ({symbol:sym}))
+            .then(r=>r.json())
+            .then(d=>({symbol:sym, ...d}))
+            .catch(()=>({symbol:sym}))
         )
       );
       const map = {};
@@ -795,13 +668,17 @@ function StocksPage({dark=false}) {
     setLoading(false);
   }
 
-  function pct(q) { if(!q||!q.pc||!q.c) return 0; return ((q.c-q.pc)/q.pc*100); }
+  function pct(q) {
+    if(!q||!q.pc||!q.c) return 0;
+    return ((q.c - q.pc) / q.pc * 100);
+  }
   function isUp(q) { return pct(q) >= 0; }
   function fmtPct(q) { const p=pct(q); return (p>=0?"+":"")+p.toFixed(2)+"%"; }
   function fmtPrice(q) { return q?.c ? "$"+q.c.toFixed(2) : "—"; }
 
   return (
-    <div style={{paddingBottom:80,background:dark?"#0d1117":"#fafafa",minHeight:"100vh"}}>
+    <div style={{paddingBottom:80}}>
+      {/* Header */}
       <div style={{background:"linear-gradient(135deg,#0d1117,#0a2540)",padding:"20px 16px 16px",color:"#fff"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
@@ -814,189 +691,119 @@ function StocksPage({dark=false}) {
           <button style={{background:"rgba(255,255,255,0.12)",border:"none",color:"#fff",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={fetchAll}>🔄 Refresh</button>
         </div>
       </div>
+
       <div style={{padding:"16px 14px"}}>
         {loading && <Spinner/>}
-        {!loading && (
-          <div>
-            <h3 style={{...S.secT,color:dark?"#e0e0e0":"#0d1117",marginBottom:12}}>Major Indices</h3>
-            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:24}}>
-              {INDICES.map(idx => {
-                const q = quotes[idx.symbol];
-                const up = isUp(q);
-                return (
-                  <div key={idx.symbol} style={{background:dark?"#161b22":"#fff",borderRadius:16,padding:"16px 18px",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",display:"flex",alignItems:"center"}}>
-                    <div style={{width:46,height:46,borderRadius:14,background:idx.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{idx.icon}</div>
-                    <div style={{marginLeft:14,flex:1}}>
-                      <div style={{fontWeight:800,fontSize:16,color:dark?"#e0e0e0":"#0d1117"}}>{idx.name}</div>
-                      <div style={{color:dark?"#888":"#aaa",fontSize:12,marginTop:2}}>{idx.symbol}</div>
-                    </div>
-                    <div style={{textAlign:"right"}}>
-                      <div style={{fontWeight:800,fontSize:18,color:dark?"#e0e0e0":"#0d1117"}}>{fmtPrice(q)}</div>
-                      <div style={{fontSize:13,fontWeight:700,color:up?"#34c759":"#ff3b30",marginTop:2}}>{up?"▲":"▼"} {fmtPct(q)}</div>
+        {!loading && <>
+          {/* Major Indices */}
+          <h3 style={{...S.secT,marginBottom:12}}>Major Indices</h3>
+          <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:24}}>
+            {INDICES.map(idx=>{
+              const q=quotes[idx.symbol];
+              const up=isUp(q);
+              return (
+                <div key={idx.symbol} style={{background:"#fff",borderRadius:16,padding:"16px 18px",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",display:"flex",alignItems:"center"}}>
+                  <div style={{width:46,height:46,borderRadius:14,background:idx.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{idx.icon}</div>
+                  <div style={{marginLeft:14,flex:1}}>
+                    <div style={{fontWeight:800,fontSize:16,color:"#0d1117"}}>{idx.name}</div>
+                    <div style={{color:"#aaa",fontSize:12,marginTop:2}}>{idx.symbol}</div>
+                  </div>
+                  <div style={{textAlign:"right"}}>
+                    <div style={{fontWeight:800,fontSize:18,color:"#0d1117"}}>{fmtPrice(q)}</div>
+                    <div style={{fontSize:13,fontWeight:700,color:up?"#34c759":"#ff3b30",marginTop:2}}>
+                      {up?"▲":"▼"} {fmtPct(q)}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-            <h3 style={{...S.secT,color:dark?"#e0e0e0":"#0d1117",marginBottom:12}}>Top Stocks</h3>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-              {WATCHLIST.map(stock => {
-                const q = quotes[stock.symbol];
-                const up = isUp(q);
-                return (
-                  <div key={stock.symbol} style={{background:dark?"#161b22":"#fff",borderRadius:14,padding:"14px",boxShadow:"0 2px 10px rgba(0,0,0,0.05)"}}>
-                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-                      <span style={{fontSize:20}}>{stock.icon}</span>
-                      <div>
-                        <div style={{fontWeight:800,fontSize:13,color:dark?"#e0e0e0":"#0d1117"}}>{stock.symbol}</div>
-                        <div style={{color:dark?"#666":"#bbb",fontSize:10}}>{stock.name}</div>
-                      </div>
-                    </div>
-                    <div style={{fontWeight:800,fontSize:17,color:dark?"#e0e0e0":"#0d1117",marginBottom:2}}>{fmtPrice(q)}</div>
-                    <div style={{display:"inline-flex",alignItems:"center",gap:4,background:up?"#e8f5e9":"#fff0f0",borderRadius:8,padding:"3px 8px"}}>
-                      <span style={{fontSize:10,fontWeight:800,color:up?"#34c759":"#ff3b30"}}>{up?"▲":"▼"} {fmtPct(q)}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Watchlist */}
+          <h3 style={{...S.secT,marginBottom:12}}>Top Stocks</h3>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+            {WATCHLIST.map(stock=>{
+              const q=quotes[stock.symbol];
+              const up=isUp(q);
+              return (
+                <div key={stock.symbol} style={{background:"#fff",borderRadius:14,padding:"14px",boxShadow:"0 2px 10px rgba(0,0,0,0.05)"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                    <span style={{fontSize:20}}>{stock.icon}</span>
+                    <div>
+                      <div style={{fontWeight:800,fontSize:13,color:"#0d1117"}}>{stock.symbol}</div>
+                      <div style={{color:"#bbb",fontSize:10}}>{stock.name}</div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-            <div style={{marginTop:20,padding:"10px 14px",background:dark?"#1a1a1a":"#f5f7fa",borderRadius:12,fontSize:11,color:dark?"#555":"#bbb",textAlign:"center",lineHeight:1.6}}>
-              Data provided by Finnhub · Prices may be delayed 15 mins · Not financial advice
-            </div>
+                  <div style={{fontWeight:800,fontSize:17,color:"#0d1117",marginBottom:2}}>{fmtPrice(q)}</div>
+                  <div style={{display:"inline-flex",alignItems:"center",gap:4,background:up?"#e8f5e9":"#fff0f0",borderRadius:8,padding:"3px 8px"}}>
+                    <span style={{fontSize:10,fontWeight:800,color:up?"#34c759":"#ff3b30"}}>{up?"▲":"▼"} {fmtPct(q)}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
-function NotificationsPage({notifications,setNotifications,allUsers,dark,setScreen,setChatTarget}) {
-  function markAllRead() { setNotifications(n => n.map(x => ({...x,read:true}))); }
-  const icons = {follow:"👥",message:"💬",like:"❤️",system:"🔔"};
-  return (
-    <div style={{paddingBottom:80,background:dark?"#0d1117":"#fafafa",minHeight:"100vh"}}>
-      <div style={{background:"linear-gradient(135deg,#7c3aed,#4f1fa8)",padding:"20px 16px 16px",color:"#fff"}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div>
-            <h2 style={{margin:"0 0 4px",fontSize:20,fontWeight:800}}>🔔 Notifications</h2>
-            <p style={{margin:0,fontSize:12,opacity:0.7}}>{notifications.filter(n=>!n.read).length} unread</p>
+          {/* Disclaimer */}
+          <div style={{marginTop:20,padding:"10px 14px",background:"#f5f7fa",borderRadius:12,fontSize:11,color:"#bbb",textAlign:"center",lineHeight:1.6}}>
+            Data provided by Finnhub · Prices may be delayed 15 mins · Not financial advice
           </div>
-          {notifications.length>0&&(
-            <button style={{background:"rgba(255,255,255,0.15)",border:"none",color:"#fff",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={markAllRead}>Mark all read</button>
-          )}
-        </div>
-      </div>
-      <div style={{padding:"14px 14px"}}>
-        {notifications.length===0&&(
-          <div style={{textAlign:"center",padding:"60px 20px"}}>
-            <p style={{fontSize:40,margin:"0 0 12px"}}>🔕</p>
-            <p style={{color:dark?"#666":"#aaa",fontSize:14}}>No notifications yet.</p>
-            <p style={{color:dark?"#555":"#bbb",fontSize:12}}>When investors follow or message you, you will see it here.</p>
-          </div>
-        )}
-        {notifications.map((n,i) => (
-          <div key={n.id||i} onClick={()=>setNotifications(ns=>ns.map((x,j)=>j===i?{...x,read:true}:x))} style={{background:n.read?(dark?"#1a1a1a":"#fafafa"):(dark?"#1e2340":"#f0f5ff"),borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:12,cursor:"pointer",border:"1px solid "+(n.read?(dark?"#2a2a2a":"#eee"):"#c7d9ff"),transition:"all .2s"}}>
-            <div style={{width:42,height:42,borderRadius:"50%",background:n.read?(dark?"#2a2a2a":"#e8edf5"):"#dce8ff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>
-              {icons[n.type]||"🔔"}
-            </div>
-            <div style={{flex:1}}>
-              <p style={{margin:"0 0 3px",fontSize:14,fontWeight:n.read?500:700,color:dark?"#e0e0e0":"#0d1117"}}>{n.text}</p>
-              <p style={{margin:0,fontSize:11,color:dark?"#666":"#bbb"}}>{timeAgo(n.ts)}</p>
-            </div>
-            {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#1a6cf5",flexShrink:0}}/>}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function InvestorDashboard({me,allUsers,messages,dark,setScreen,setChatTarget}) {
-  const D = dark ? DK : {};
-  const startups = allUsers.filter(u=>u.role==="startup");
-  const [followedIds,setFollowedIds] = useState([]);
-  useEffect(()=>{sb.from("follows").select("following_id").eq("follower_id",me.id).then(({data})=>setFollowedIds((data||[]).map(f=>f.following_id)));},[me.id]);
-
-  const myMsgPeers = [...new Set(messages.filter(m=>m.from_id===me.id||m.to_id===me.id).map(m=>m.from_id===me.id?m.to_id:m.from_id))];
-  const contacted = myMsgPeers.filter(id=>startups.find(s=>s.id===id)).length;
-  const followed = followedIds.length;
-  const totalViews = startups.reduce((a,s)=>a+(s.views||0),0);
-  const recentStartups = [...startups].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,5);
-  const followedStartups = startups.filter(s=>followedIds.includes(s.id));
-  const industryMatch = startups.filter(s=>me.industries?.includes(s.industry));
-
-  const statCards = [
-    {icon:"👥",label:"Following",value:followed,color:"#1a6cf5"},
-    {icon:"💬",label:"Contacted",value:contacted,color:"#7c3aed"},
-    {icon:"🏭",label:"My Industries",value:me.industries?.length||0,color:"#0891b2"},
-    {icon:"🔍",label:"Matches",value:industryMatch.length,color:"#34c759"},
-  ];
-
-  function fmtM(v){return v>=1000000?`$${(v/1000000).toFixed(1)}M`:v>=1000?`$${(v/1000).toFixed(0)}K`:`$${v}`;}
-
-  return (
-    <div style={{paddingBottom:80,...D.app}}>
-      <div style={{background:"linear-gradient(135deg,#0d1117,#1a2744)",padding:"20px 16px 20px",color:"#fff"}}>
-        <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:16}}>
-          <div style={{width:56,height:56,borderRadius:16,overflow:"hidden",border:"2px solid rgba(255,255,255,0.2)"}}><img src={me.avatar_url} alt={me.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-          <div>
-            <h2 style={{margin:"0 0 2px",fontSize:19,fontWeight:800}}>{me.name}</h2>
-            <p style={{margin:0,fontSize:12,opacity:0.7}}>💼 {me.firm||"Independent Investor"}</p>
-          </div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-          {statCards.map(c=>(
-            <div key={c.label} style={{background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",backdropFilter:"blur(8px)"}}>
-              <div style={{fontSize:22,marginBottom:4}}>{c.icon}</div>
-              <div style={{fontSize:24,fontWeight:800,color:"#fff"}}>{c.value}</div>
-              <div style={{fontSize:12,opacity:0.7}}>{c.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div style={{padding:"16px 14px"}}>
-        {/* Industry Focus */}
-        <div style={{...D.card,background:dark?"#1a1a1a":"#fff",borderRadius:16,padding:"16px",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",marginBottom:16}}>
-          <h3 style={{margin:"0 0 12px",fontSize:15,fontWeight:800,color:dark?"#e0e0e0":"#0d1117"}}>🎯 Your Investment Focus</h3>
-          <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
-            {(me.industries||[]).map(ind=>(
-              <span key={ind} style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"5px 12px",fontSize:12,fontWeight:700}}>{ICONS[ind]} {ind}</span>
-            ))}
-            {(!me.industries||me.industries.length===0)&&<p style={{color:dark?"#555":"#bbb",fontSize:13}}>No industries set — update your profile.</p>}
-          </div>
-        </div>
-
-        {/* Followed Startups */}
-        {followedStartups.length>0&&<>
-          <h3 style={{...S.secT,color:dark?"#e0e0e0":"#0d1117",marginBottom:12}}>⭐ Startups You Follow</h3>
-          {followedStartups.map(s=>(
-            <div key={s.id} style={{background:dark?"#1a1a1a":"#fff",borderRadius:14,padding:"14px 16px",marginBottom:10,boxShadow:"0 1px 8px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",gap:12}}>
-              <div style={{width:44,height:44,borderRadius:12,overflow:"hidden",flexShrink:0}}><img src={s.avatar_url} alt={s.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{fontWeight:700,fontSize:14,color:dark?"#e0e0e0":"#0d1117"}}>{s.name}</div>
-                <div style={{color:"#1a6cf5",fontSize:12}}>{ICONS[s.industry]} {s.industry}</div>
-                {s.raise_goal>0&&<div style={{marginTop:6}}><FundraisingBar raised={s.raise_raised||0} goal={s.raise_goal} dark={dark}/></div>}
-              </div>
-              <button style={S.smBtn} onClick={()=>{setChatTarget(s);setScreen("chat");}}>💬</button>
-            </div>
-          ))}
         </>}
-
-        {/* Top Trending Startups */}
-        <h3 style={{...S.secT,color:dark?"#e0e0e0":"#0d1117",marginBottom:12,marginTop:8}}>🔥 Trending Startups</h3>
-        {recentStartups.map((s,i)=>(
-          <div key={s.id} style={{background:dark?"#1a1a1a":"#fff",borderRadius:14,padding:"14px 16px",marginBottom:10,boxShadow:"0 1px 8px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",gap:12}}>
-            <div style={{width:28,height:28,borderRadius:8,background:i===0?"#ffd700":i===1?"#c0c0c0":i===2?"#cd7f32":"#f0f5ff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,color:i<3?"#fff":"#1a6cf5",flexShrink:0}}>#{i+1}</div>
-            <div style={{width:40,height:40,borderRadius:12,overflow:"hidden",flexShrink:0}}><img src={s.avatar_url} alt={s.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontWeight:700,fontSize:13,color:dark?"#e0e0e0":"#0d1117"}}>{s.pitch_title||s.name}</div>
-              <div style={{color:"#aaa",fontSize:11}}>{ICONS[s.industry]} {s.industry} · 👁 {s.views||0} views</div>
-            </div>
-            <button style={S.smBtn} onClick={()=>{setChatTarget(s);setScreen("chat");}}>💬</button>
-          </div>
-        ))}
       </div>
     </div>
   );
 }
+
+// ─── STYLES ───────────────────────────────────────────────────────────────────
+const S={
+  app:{fontFamily:"'DM Sans',sans-serif",background:"#fafafa",minHeight:"100vh",maxWidth:480,margin:"0 auto"},
+  splash:{height:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#fff"},
+  logoRow:{display:"flex",alignItems:"center",gap:8},
+  lm:{background:"#1a6cf5",color:"#fff",fontWeight:800,fontSize:20,width:38,height:38,borderRadius:11,display:"flex",alignItems:"center",justifyContent:"center"},
+  lt:{fontSize:26,fontWeight:800,color:"#0d1117",letterSpacing:"-0.5px"},
+  aWrap:{minHeight:"100vh",display:"flex",justifyContent:"center",alignItems:"flex-start",background:"#fafafa",padding:"32px 16px"},
+  aCard:{background:"#fff",borderRadius:20,padding:"28px 24px",width:"100%",maxWidth:400,boxShadow:"0 4px 30px rgba(0,0,0,0.07)",display:"flex",flexDirection:"column",gap:11},
+  aTitle:{margin:"4px 0 6px",fontSize:21,fontWeight:800,color:"#0d1117"},
+  aSwitch:{textAlign:"center",color:"#aaa",fontSize:13,margin:0},
+  inp:{border:"1.5px solid #e8edf5",borderRadius:12,padding:"11px 14px",fontSize:14,outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"'DM Sans',sans-serif",color:"#0d1117"},
+  btnP:{background:"#1a6cf5",color:"#fff",border:"none",borderRadius:12,padding:"13px 0",fontSize:15,fontWeight:700,cursor:"pointer",width:"100%",fontFamily:"'DM Sans',sans-serif"},
+  btnG:{background:"#fff",color:"#1a6cf5",border:"1.5px solid #1a6cf5",borderRadius:12,padding:"12px 0",fontSize:15,fontWeight:600,cursor:"pointer",width:"100%",fontFamily:"'DM Sans',sans-serif"},
+  lnk:{color:"#1a6cf5",cursor:"pointer",fontWeight:600},
+  rCard:{flex:1,border:"2px solid #e8edf5",borderRadius:16,padding:"18px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer"},
+  rCardOn:{border:"2px solid #1a6cf5",background:"#f0f5ff"},
+  indGrid:{display:"flex",flexWrap:"wrap",gap:7,maxHeight:220,overflowY:"auto"},
+  iChip:{background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"6px 11px",fontSize:12,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"},
+  iChipOn:{background:"#f0f5ff",border:"1.5px solid #1a6cf5",color:"#1a6cf5"},
+  vmCard:{flex:1,border:"2px solid #e8edf5",borderRadius:16,padding:"18px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2,cursor:"pointer"},
+  vBox:{border:"2px dashed #e8edf5",borderRadius:14,padding:24,display:"flex",flexDirection:"column",alignItems:"center",cursor:"pointer",minHeight:110,justifyContent:"center"},
+  hdr:{position:"sticky",top:0,zIndex:100,background:"#fff",borderBottom:"1px solid #f0f0f0",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px"},
+  nBtn:{background:"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",padding:"5px 6px",borderRadius:10,gap:2,position:"relative"},
+  nBtnOn:{background:"#f0f5ff"},
+  badge:{position:"absolute",top:-2,right:-4,background:"#ff3b30",color:"#fff",fontSize:9,fontWeight:700,width:15,height:15,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"},
+  fBar:{display:"flex",gap:7,overflowX:"auto",padding:"10px 14px 8px",scrollbarWidth:"none"},
+  fChip:{background:"#f5f7fa",border:"1.5px solid #eee",borderRadius:20,padding:"6px 12px",fontSize:12,cursor:"pointer",whiteSpace:"nowrap",fontWeight:500,fontFamily:"'DM Sans',sans-serif",flexShrink:0},
+  fChipOn:{background:"#1a6cf5",color:"#fff",border:"1.5px solid #1a6cf5"},
+  hint:{margin:"0 14px 10px",padding:"9px 13px",background:"#f0f5ff",borderRadius:11,fontSize:12,color:"#1a6cf5"},
+  card:{background:"#fff",borderRadius:18,boxShadow:"0 2px 14px rgba(0,0,0,0.06)",overflow:"hidden"},
+  playBtn:{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.18)",fontSize:40,color:"#fff"},
+  indBadge:{position:"absolute",top:10,left:10,background:"rgba(0,0,0,0.55)",color:"#fff",borderRadius:20,padding:"4px 10px",fontSize:11,backdropFilter:"blur(4px)"},
+  aBtn:{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:"#555",padding:"4px 6px",borderRadius:8,fontFamily:"'DM Sans',sans-serif"},
+  back:{background:"none",border:"none",cursor:"pointer",fontSize:15,fontWeight:700,color:"#1a6cf5",padding:"0 8px 0 0",display:"inline-block"},
+  secT:{fontSize:15,fontWeight:700,color:"#0d1117",margin:"0 0 10px"},
+  smBtn:{background:"#f0f5ff",color:"#1a6cf5",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",flexShrink:0},
+  toast:{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",color:"#fff",padding:"12px 24px",borderRadius:24,fontSize:14,fontWeight:600,zIndex:9999,boxShadow:"0 4px 20px rgba(0,0,0,0.25)",whiteSpace:"nowrap",transition:"background .3s"},
+};
+
+const CSS=`
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+  *{box-sizing:border-box;}body{margin:0;background:#fafafa;}
+  ::-webkit-scrollbar{width:0;height:0;}
+  .cp{cursor:pointer;}
+  .card{transition:box-shadow .2s;}.card:hover{box-shadow:0 6px 28px rgba(0,0,0,0.1)!important;}
+  .vmcard:hover{border-color:#1a6cf5!important;background:#f0f5ff;}
+  input:focus,textarea:focus{border-color:#1a6cf5!important;box-shadow:0 0 0 3px rgba(26,108,245,0.12);}
+  button:active{transform:scale(0.97);}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.2;}}
+  .spinner{width:28px;height:28px;border:3px solid #e8edf5;border-top-color:#1a6cf5;border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  a{text-decoration:none;color:inherit;}
+`;
