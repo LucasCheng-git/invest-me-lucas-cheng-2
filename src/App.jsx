@@ -44,7 +44,11 @@ export default function InvestMe() {
   const [me, setMe] = useState(null);
   const [screen, setScreen] = useState("splash");
   const [dark, setDark] = useState(false);
-  function toggleDark(){ setDark(d=>!d); }
+  function toggleDark(){ setDark(d=>{
+    document.body.style.background = d ? "#fafafa" : "#0d1117";
+    document.documentElement.style.background = d ? "#fafafa" : "#0d1117";
+    return !d;
+  }); }
   const [watchTarget, setWatchTarget] = useState(null);
   const [chatTarget, setChatTarget] = useState(null);
   const [filterInd, setFilterInd] = useState("All");
@@ -56,6 +60,12 @@ export default function InvestMe() {
     setNotif(msg); setNotifType(type);
     setTimeout(()=>setNotif(null), 3200);
   }
+
+  useEffect(() => {
+    // sync body bg with dark state
+    document.body.style.background = dark ? "#0d1117" : "#fafafa";
+    document.documentElement.style.background = dark ? "#0d1117" : "#fafafa";
+  }, [dark]);
 
   useEffect(() => {
     sb.auth.getSession().then(async ({data:{session}}) => {
@@ -799,7 +809,7 @@ const S={
 
 const CSS=`
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-  *{box-sizing:border-box;}body{margin:0;background:#fafafa;}
+  *{box-sizing:border-box;}body{margin:0;}
   ::-webkit-scrollbar{width:0;height:0;}
   .cp{cursor:pointer;}
   .card{transition:box-shadow .2s;}.card:hover{box-shadow:0 6px 28px rgba(0,0,0,0.1)!important;}
