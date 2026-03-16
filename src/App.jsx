@@ -302,6 +302,28 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
   );
 }
 
+// ─── FUNDRAISING BAR ─────────────────────────────────────────────────────────
+function FundraisingBar({raised, goal, dark}) {
+  const pct = Math.min(Math.round((raised/goal)*100), 100);
+  const fmt = v => v>=1000000 ? "$"+(v/1000000).toFixed(1)+"M" : v>=1000 ? "$"+(v/1000).toFixed(0)+"K" : "$"+v;
+  const barColor = pct>=100 ? "#34c759" : pct>=50 ? "#1a6cf5" : "#ff9500";
+  return (
+    <div style={{marginBottom:4}}>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+        <span style={{fontSize:12,fontWeight:700,color:"#1a6cf5"}}>💰 Raising {fmt(goal)}</span>
+        <span style={{fontSize:12,fontWeight:700,color:barColor}}>{pct}% funded</span>
+      </div>
+      <div style={{height:8,borderRadius:8,background:dark?"#2a2a2a":"#e8edf5",overflow:"hidden"}}>
+        <div style={{height:"100%",width:pct+"%",borderRadius:8,background:barColor,transition:"width .6s ease"}}/>
+      </div>
+      <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+        <span style={{fontSize:11,color:dark?"#888":"#aaa"}}>Raised: {fmt(raised)}</span>
+        <span style={{fontSize:11,color:dark?"#888":"#aaa"}}>Goal: {fmt(goal)}</span>
+      </div>
+    </div>
+  );
+}
+
 // ─── FEED ─────────────────────────────────────────────────────────────────────
 function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setChatTarget,notify,dark=false}) {
   const [likedMap,setLikedMap]=useState({});
@@ -345,7 +367,8 @@ function Feed({me,displayS,filterInd,setFilterInd,setWatchTarget,setScreen,setCh
                 {me.id!==s.id&&<button style={{...S.smBtn,background:followMap[s.id]?"#e8f5e9":"#f0f5ff",color:followMap[s.id]?"#34c759":"#1a6cf5",border:followMap[s.id]?"1.5px solid #34c759":"1.5px solid transparent"}} onClick={()=>toggleFollow(s.id)}>{followMap[s.id]?"✓ Following":"+ Follow"}</button>}
               </div>
               <p style={{margin:"0 0 4px",fontWeight:700,fontSize:15,color:dark?"#e0e0e0":"#0d1117"}}>{s.pitch_title||s.name}</p>
-              <p style={{margin:"0 0 12px",color:dark?"#888":"#666",fontSize:13,lineHeight:1.5}}>{s.bio}</p>
+              <p style={{margin:"0 0 8px",color:dark?"#888":"#666",fontSize:13,lineHeight:1.5}}>{s.bio}</p>
+              {s.raise_goal>0&&<div style={{marginBottom:8}}><FundraisingBar raised={s.raise_raised||0} goal={s.raise_goal} dark={dark}/></div>}
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <button style={S.aBtn} onClick={()=>toggleLike(s.id)}>{likedMap[s.id]?"❤️":"🤍"} {likeCounts[s.id]||s.likes||0}</button>
                 <button style={S.aBtn}>👁 {s.views||0}</button>
@@ -370,7 +393,8 @@ function Watch({startup,me,setChatTarget,setScreen}) {
         <div style={{padding:"16px 20px 20px"}}>
           <div style={{display:"flex",alignItems:"center",marginBottom:12}}><Av src={startup.avatar_url} name={startup.name} size={50}/><div style={{marginLeft:12}}><div style={{fontWeight:700,fontSize:17}}>{startup.name}</div><div style={{color:"#1a6cf5",fontSize:13}}>{ICONS[startup.industry]} {startup.industry}</div></div></div>
           <h2 style={{margin:"0 0 8px",fontSize:19,fontWeight:800}}>{startup.pitch_title}</h2>
-          <p style={{color:"#555",lineHeight:1.6,margin:"0 0 16px"}}>{startup.bio}</p>
+          <p style={{color:"#555",lineHeight:1.6,margin:"0 0 10px"}}>{startup.bio}</p>
+          {startup.raise_goal>0&&<div style={{marginBottom:14}}><FundraisingBar raised={startup.raise_raised||0} goal={startup.raise_goal}/></div>}
           <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
             <button style={S.aBtn} onClick={()=>setLiked(!liked)}>{liked?"❤️":"🤍"} {(startup.likes||0)+(liked?1:0)}</button>
             <button style={S.aBtn}>👁 {startup.views||0}</button>
@@ -390,6 +414,8 @@ function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notif
   const [editName,setEditName]=useState(me.name||"");
   const [saving,setSaving]=useState(false);
   const [uploadingAvatar,setUploadingAvatar]=useState(false);
+  const [editGoal,setEditGoal]=useState(me.raise_goal||"");
+  const [editRaised,setEditRaised]=useState(me.raise_raised||"");
   const avatarRef=useRef();
   const isS=me.role==="startup";
   const investors=allUsers.filter(u=>u.role==="investor");
@@ -400,7 +426,7 @@ function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notif
     if(!editName.trim()){notify("Name required","error");return;}
     if(!wcOk){notify("Bio exceeds 250 words","error");return;}
     setSaving(true);
-    const updates={name:editName,bio:editBio,industry:isS?editIndustry:null,industries:!isS?editIndustries:(me.industries||[])};
+    const updates={name:editName,bio:editBio,industry:isS?editIndustry:null,industries:!isS?editIndustries:(me.industries||[]),raise_goal:isS?(Number(editGoal)||0):0,raise_raised:isS?(Number(editRaised)||0):0};
     const {error}=await sb.from("profiles").update(updates).eq("id",me.id);
     if(error)notify("❌ Save failed","error");
     else{setMe(m=>({...m,...updates}));notify("Profile updated ✅","success");setEditing(false);}
