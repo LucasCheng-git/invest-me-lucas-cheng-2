@@ -111,7 +111,7 @@ export default function InvestMe() {
       {screen==="splash"   && <Splash setScreen={setScreen}/>}
       {screen==="login"    && <Login login={login} setScreen={setScreen}/>}
       {screen==="register" && <Register sb={sb} onDone={p=>{setMe(m=>({...m,...p}));setScreen("feed");notify("Welcome to InvestMe 🎉","success");}} setScreen={setScreen} notify={notify}/>}
-      {["feed","profile","messages","chat","watch","community","news","stocks"].includes(screen) && me && (
+      {["feed","profile","messages","chat","watch","community","news","stocks","notifications"].includes(screen) && me && (
         <Shell me={me} setMe={setMe} screen={screen} setScreen={setScreen} logout={logout}
           watchTarget={watchTarget} setWatchTarget={setWatchTarget}
           chatTarget={chatTarget} setChatTarget={setChatTarget}
@@ -232,19 +232,37 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
   const [allUsers,setAllUsers]=useState([]);
   const [messages,setMessages]=useState([]);
   const [loadingUsers,setLoadingUsers]=useState(true);
+  const [notifications,setNotifications]=useState([]);
 
   useEffect(()=>{sb.from("profiles").select("*").then(({data})=>{setAllUsers(data||[]);setLoadingUsers(false);});},[]);
   useEffect(()=>{
     if(!me)return;
     sb.from("messages").select("*").or(`from_id.eq.${me.id},to_id.eq.${me.id}`).order("created_at",{ascending:true}).then(({data})=>setMessages(data||[]));
-    const ch=sb.channel("msgs-"+me.id).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages",filter:`to_id=eq.${me.id}`},p=>setMessages(prev=>[...prev,p.new])).subscribe();
+    const ch=sb.channel("msgs-"+me.id).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages",filter:`to_id=eq.${me.id}`},p=>{
+      setMessages(prev=>[...prev,p.new]);
+      const sender=allUsers.find(u=>u.id===p.new.from_id);
+      setNotifications(prev=>[{id:Date.now(),type:"message",text:(sender?.name||"Someone")+" sent you a message",ts:new Date().toISOString(),read:false},...prev]);
+    }).subscribe();
     return()=>sb.removeChannel(ch);
   },[me?.id]);
+
+  useEffect(()=>{
+    if(!me||!allUsers.length)return;
+    sb.from("follows").select("*").eq("following_id",me.id).order("created_at",{ascending:false}).limit(20).then(({data})=>{
+      const ns=(data||[]).map(f=>({
+        id:f.id, type:"follow",
+        text:(allUsers.find(u=>u.id===f.follower_id)?.name||"Someone")+" followed you",
+        ts:f.created_at, read:false
+      }));
+      setNotifications(prev=>[...ns,...prev.filter(n=>n.type!=="follow")].slice(0,50));
+    });
+  },[allUsers.length,me?.id]);
 
   async function sendMsg(toId,text){const {data,error}=await sb.from("messages").insert({from_id:me.id,to_id:toId,text,read:false}).select().single();if(!error&&data)setMessages(p=>[...p,data]);else if(error)notify("Failed to send","error");}
   function getConvo(a,b){return messages.filter(m=>(m.from_id===a&&m.to_id===b)||(m.from_id===b&&m.to_id===a));}
   function peers(){const s=new Set();messages.forEach(m=>{if(m.from_id===me.id)s.add(m.to_id);if(m.to_id===me.id)s.add(m.from_id);});return[...s].map(id=>allUsers.find(u=>u.id===id)).filter(Boolean);}
   const unread=messages.filter(m=>m.to_id===me.id&&!m.read).length;
+  const unreadNotifs=notifications.filter(n=>!n.read).length;
   const startups=allUsers.filter(u=>u.role==="startup");
   const relS=me.role==="investor"?startups.filter(s=>me.industries?.includes(s.industry)):startups;
   const displayS=filterInd==="All"?(me.role==="investor"?relS:startups):(me.role==="investor"?relS.filter(s=>s.industry===filterInd):startups.filter(s=>s.industry===filterInd));
@@ -255,6 +273,7 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
     {icon:"📈",lbl:"Markets",s:"stocks"},
     {icon:"🌐",lbl:"Community",s:"community"},
     {icon:"💬",lbl:"DMs",s:"messages",badge:unread},
+    {icon:"🔔",lbl:"Alerts",s:"notifications",badge:unreadNotifs},
     {icon:"👤",lbl:"Profile",s:"profile"},
   ];
 
@@ -277,6 +296,7 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
         {screen==="community"&&<Community me={me} allUsers={allUsers} notify={notify}/>}
         {screen==="news"&&<NewsPage/>}
         {screen==="stocks"&&<StocksPage/>}
+        {screen==="notifications"&&<NotificationsPage notifications={notifications} setNotifications={setNotifications} dark={dark}/>}
       </main>
     </div>
   );
@@ -762,6 +782,50 @@ function StocksPage() {
             Data provided by Finnhub · Prices may be delayed 15 mins · Not financial advice
           </div>
         </>}
+      </div>
+    </div>
+  );
+}
+
+// ─── NOTIFICATIONS PAGE ───────────────────────────────────────────────────────
+function NotificationsPage({notifications, setNotifications, dark}) {
+  const icons = {follow:"👥", message:"💬", like:"❤️", system:"🔔"};
+  function markAllRead(){ setNotifications(n=>n.map(x=>({...x,read:true}))); }
+  return (
+    <div style={{paddingBottom:80,background:dark?"#0d1117":"#fafafa",minHeight:"100vh"}}>
+      <div style={{background:"linear-gradient(135deg,#7c3aed,#4f1fa8)",padding:"20px 16px 16px",color:"#fff"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div>
+            <h2 style={{margin:"0 0 4px",fontSize:20,fontWeight:800}}>🔔 Notifications</h2>
+            <p style={{margin:0,fontSize:12,opacity:0.7}}>{notifications.filter(n=>!n.read).length} unread</p>
+          </div>
+          {notifications.length>0&&(
+            <button style={{background:"rgba(255,255,255,0.15)",border:"none",color:"#fff",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={markAllRead}>Mark all read</button>
+          )}
+        </div>
+      </div>
+      <div style={{padding:"14px 14px"}}>
+        {notifications.length===0&&(
+          <div style={{textAlign:"center",padding:"60px 20px"}}>
+            <p style={{fontSize:40,margin:"0 0 12px"}}>🔕</p>
+            <p style={{color:dark?"#666":"#aaa",fontSize:14}}>No notifications yet.</p>
+            <p style={{color:dark?"#555":"#bbb",fontSize:12}}>When investors follow or message you, you will see it here.</p>
+          </div>
+        )}
+        {notifications.map((n,i)=>(
+          <div key={n.id||i}
+            onClick={()=>setNotifications(ns=>ns.map((x,j)=>j===i?{...x,read:true}:x))}
+            style={{background:n.read?(dark?"#1a1a1a":"#fff"):(dark?"#1e2340":"#f0f5ff"),borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:12,cursor:"pointer",border:"1px solid "+(n.read?(dark?"#2a2a2a":"#eee"):"#c7d9ff"),transition:"all .2s"}}>
+            <div style={{width:42,height:42,borderRadius:"50%",background:n.read?(dark?"#2a2a2a":"#e8edf5"):"#dce8ff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>
+              {icons[n.type]||"🔔"}
+            </div>
+            <div style={{flex:1}}>
+              <p style={{margin:"0 0 3px",fontSize:14,fontWeight:n.read?500:700,color:dark?"#e0e0e0":"#0d1117"}}>{n.text}</p>
+              <p style={{margin:0,fontSize:11,color:dark?"#666":"#bbb"}}>{timeAgo(n.ts)}</p>
+            </div>
+            {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#1a6cf5",flexShrink:0}}/>}
+          </div>
+        ))}
       </div>
     </div>
   );
