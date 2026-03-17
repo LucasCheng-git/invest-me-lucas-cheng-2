@@ -502,7 +502,18 @@ function Chat({me,peer,convo,sendMsg,setScreen}) {
         {convo.map(msg=>{const isMe=msg.from_id===me.id;return(<div key={msg.id} style={{display:"flex",justifyContent:isMe?"flex-end":"flex-start",marginBottom:10}}><div style={{maxWidth:"75%",padding:"10px 14px",borderRadius:18,...(isMe?{background:"#1a6cf5",color:"#fff",borderBottomRightRadius:4}:{background:"#fff",color:"#0d1117",boxShadow:"0 1px 6px rgba(0,0,0,0.07)",borderBottomLeftRadius:4})}}><p style={{margin:0,lineHeight:1.5,fontSize:14}}>{msg.text}</p><span style={{fontSize:10,opacity:0.6,display:"block",textAlign:"right",marginTop:4}}>{timeAgo(msg.created_at)}</span></div></div>);})}
         <div ref={btm}/>
       </div>
-      <div style={{display:"flex",gap:10,padding:"12px 16px",background:"#fff",borderTop:"1px solid #f0f0f0"}}><input style={{...S.inp,borderRadius:24,flex:1}} placeholder={`Message ${peer.name}…`} value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()}/><button style={{background:sending?"#aaa":"#1a6cf5",color:"#fff",border:"none",borderRadius:24,padding:"0 20px",fontSize:18,cursor:"pointer"}} onClick={send}>➤</button></div>
+      {callUrl&&(
+        <div style={{background:"#e8f5e9",borderTop:"1px solid #c8e6c9",padding:"10px 16px",display:"flex",alignItems:"center",gap:10}}>
+          <span style={{fontSize:13,fontWeight:700,color:"#2e7d32",flex:1}}>📹 Active call with {peer.name}</span>
+          <button style={{background:"#34c759",color:"#fff",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}} onClick={()=>window.open(callUrl,"_blank")}>Rejoin</button>
+          <button style={{background:"none",border:"none",cursor:"pointer",fontSize:16,color:"#aaa"}} onClick={()=>setCallUrl(null)}>✕</button>
+        </div>
+      )}
+      <div style={{display:"flex",gap:8,padding:"12px 16px",background:dark?"#161b22":"#fff",borderTop:"1px solid "+(dark?"#21262d":"#f0f0f0")}}>
+        <button style={{background:callLoading?"#aaa":"#f0f5ff",color:"#1a6cf5",border:"1.5px solid #1a6cf5",borderRadius:24,padding:"0 14px",fontSize:16,cursor:"pointer",flexShrink:0}} onClick={startVideoCall} title="Start video call">{callLoading?"⏳":"📹"}</button>
+        <input style={{...S.inp,borderRadius:24,flex:1,...(dark?{background:"#1c2333",border:"1.5px solid #30363d",color:"#e0e0e0"}:{})}} placeholder={"Message "+peer.name+"…"} value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()}/>
+        <button style={{background:sending?"#aaa":"#1a6cf5",color:"#fff",border:"none",borderRadius:24,padding:"0 20px",fontSize:18,cursor:"pointer",flexShrink:0}} onClick={send}>➤</button>
+      </div>
     </div>
   );
 }
