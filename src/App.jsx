@@ -111,7 +111,7 @@ export default function InvestMe() {
       {screen==="splash"   && <Splash setScreen={setScreen}/>}
       {screen==="login"    && <Login login={login} setScreen={setScreen}/>}
       {screen==="register" && <Register sb={sb} onDone={p=>{setMe(m=>({...m,...p}));setScreen("feed");notify("Welcome to InvestMe 🎉","success");}} setScreen={setScreen} notify={notify}/>}
-      {["feed","profile","messages","chat","watch","community","news","stocks","notifications"].includes(screen) && me && (
+      {["feed","profile","messages","chat","watch","community","news","stocks","notifications","dashboard"].includes(screen) && me && (
         <Shell me={me} setMe={setMe} screen={screen} setScreen={setScreen} logout={logout}
           watchTarget={watchTarget} setWatchTarget={setWatchTarget}
           chatTarget={chatTarget} setChatTarget={setChatTarget}
@@ -297,6 +297,7 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
         {screen==="news"&&<NewsPage/>}
         {screen==="stocks"&&<StocksPage/>}
         {screen==="notifications"&&<NotificationsPage notifications={notifications} setNotifications={setNotifications} dark={dark}/>}
+        {screen==="dashboard"&&<InvestorDashboard me={me} allUsers={allUsers} messages={messages} dark={dark} setScreen={setScreen} setChatTarget={setChatTarget}/>}
       </main>
     </div>
   );
@@ -465,7 +466,10 @@ function Profile({me,setMe,setWatchTarget,setScreen,setChatTarget,allUsers,notif
           </div>
         </div>
         {editing&&<><div style={{position:"relative",marginBottom:8}}><textarea style={{...S.inp,height:90,resize:"none",paddingBottom:24,borderColor:!wcOk?"#ff3b30":undefined}} placeholder="Bio (max 250 words)" value={editBio} onChange={e=>{if(countWords(e.target.value)<=255)setEditBio(e.target.value);}}/><span style={{position:"absolute",bottom:9,right:12,fontSize:11,color:!wcOk?"#ff3b30":wc>220?"#ff9500":"#bbb"}}>{wc}/250</span></div>{isS&&<><p style={{margin:"4px 0 8px",fontWeight:600,fontSize:13}}>Industry</p><div style={{...S.indGrid,maxHeight:160,marginBottom:12}}>{INDUSTRIES.map(ind=>(<div key={ind} style={{...S.iChip,...(editIndustry===ind?S.iChipOn:{})}} onClick={()=>setEditIndustry(ind)}>{ICONS[ind]} {ind}</div>))}</div></>}{!isS&&<><p style={{margin:"4px 0 8px",fontWeight:600,fontSize:13}}>Industries you invest in</p><div style={{...S.indGrid,maxHeight:160,marginBottom:12}}>{INDUSTRIES.map(ind=>(<div key={ind} style={{...S.iChip,...(editIndustries.includes(ind)?S.iChipOn:{})}} onClick={()=>togInd(ind)}>{ICONS[ind]} {ind}</div>))}</div></>}<div style={{display:"flex",gap:10}}><button style={{...S.btnG,flex:1}} onClick={()=>{setEditing(false);setEditName(me.name);setEditBio(me.bio||"");setEditIndustry(me.industry||"");setEditIndustries(me.industries||[]);}}>Cancel</button><button style={{...S.btnP,flex:2,opacity:saving?0.7:1}} disabled={saving} onClick={saveProfile}>{saving?"Saving…":"Save Changes ✅"}</button></div></>}
-        {!editing&&<button style={{...S.btnG,marginTop:8,padding:"9px 0",fontSize:13}} onClick={()=>setEditing(true)}>✏️ Edit Profile</button>}
+        {!editing&&<div style={{display:"flex",gap:10,marginTop:8}}>
+          <button style={{...S.btnG,flex:2,padding:"9px 0",fontSize:13}} onClick={()=>setEditing(true)}>✏️ Edit Profile</button>
+          {!isS&&<button style={{...S.btnG,flex:1,padding:"9px 0",fontSize:13}} onClick={()=>setScreen("dashboard")}>📊 Dashboard</button>}
+        </div>}
       </div>
       {isS&&<><h3 style={S.secT}>My Pitch</h3><div style={{...S.card,marginBottom:20,cursor:"pointer"}} onClick={()=>{setWatchTarget(me);setScreen("watch");}}><img src={me.video_thumb||`https://picsum.photos/seed/${me.id}/400/220`} alt="pitch" style={{width:"100%",aspectRatio:"16/9",objectFit:"cover",display:"block"}}/><div style={{padding:"12px 16px"}}><p style={{margin:0,fontWeight:700}}>{me.pitch_title||"My Pitch"}</p></div></div><h3 style={S.secT}>Find Investors</h3>{investors.map(inv=>(<div key={inv.id} style={{...S.card,padding:"14px 16px",display:"flex",alignItems:"center",marginBottom:10}}><Av src={inv.avatar_url} name={inv.name} size={48}/><div style={{marginLeft:12,flex:1}}><div style={{fontWeight:700}}>{inv.name}</div>{inv.firm&&<div style={{color:"#1a6cf5",fontSize:13}}>{inv.firm}</div>}<div style={{color:"#aaa",fontSize:12,marginTop:2}}>{inv.industries?.map(i=>ICONS[i]).join(" ")}</div></div><button style={S.smBtn} onClick={()=>{setChatTarget(inv);setScreen("chat");}}>Message</button></div>))}</>}
       {!isS&&<><h3 style={S.secT}>Your focus areas</h3><div style={{display:"flex",flexWrap:"wrap",gap:8}}>{me.industries?.map(ind=>(<span key={ind} style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"6px 14px",fontSize:13,fontWeight:600}}>{ICONS[ind]} {ind}</span>))}</div></>}
@@ -808,6 +812,99 @@ function StocksPage() {
             Data provided by Finnhub · Prices may be delayed 15 mins · Not financial advice
           </div>
         </>}
+      </div>
+    </div>
+  );
+}
+
+// ─── INVESTOR DASHBOARD ───────────────────────────────────────────────────────
+function InvestorDashboard({me, allUsers, messages, dark, setScreen, setChatTarget}) {
+  const [followedIds, setFollowedIds] = useState([]);
+  const bg = dark?"#0d1117":"#fafafa";
+  const cardBg = dark?"#161b22":"#fff";
+
+  useEffect(()=>{
+    sb.from("follows").select("following_id").eq("follower_id",me.id).then(({data})=>{
+      setFollowedIds((data||[]).map(f=>f.following_id));
+    });
+  },[me.id]);
+
+  const startups = allUsers.filter(u=>u.role==="startup");
+  const myMsgPeers = [...new Set(messages.filter(m=>m.from_id===me.id||m.to_id===me.id).map(m=>m.from_id===me.id?m.to_id:m.from_id))];
+  const contacted = myMsgPeers.filter(id=>startups.find(s=>s.id===id)).length;
+  const industryMatch = startups.filter(s=>me.industries?.includes(s.industry));
+  const followedStartups = startups.filter(s=>followedIds.includes(s.id));
+  const trending = [...startups].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,5);
+
+  const stats = [
+    {icon:"👥", label:"Following",  value:followedIds.length, color:"#1a6cf5"},
+    {icon:"💬", label:"Contacted",  value:contacted,          color:"#7c3aed"},
+    {icon:"🏭", label:"Industries", value:me.industries?.length||0, color:"#0891b2"},
+    {icon:"🔍", label:"Matches",    value:industryMatch.length, color:"#34c759"},
+  ];
+
+  return (
+    <div style={{paddingBottom:80,background:bg,minHeight:"100vh"}}>
+      <div style={{background:"linear-gradient(135deg,#0d1117,#1a2744)",padding:"20px 16px 20px",color:"#fff"}}>
+        <button style={{background:"none",border:"none",color:"rgba(255,255,255,0.6)",cursor:"pointer",fontSize:13,padding:"0 0 12px",fontFamily:"'DM Sans',sans-serif"}} onClick={()=>setScreen("profile")}>← Back to Profile</button>
+        <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:16}}>
+          <Av src={me.avatar_url} name={me.name} size={56}/>
+          <div>
+            <h2 style={{margin:"0 0 2px",fontSize:19,fontWeight:800}}>{me.name}</h2>
+            <p style={{margin:0,fontSize:12,opacity:0.7}}>💼 {me.firm||"Independent Investor"}</p>
+          </div>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {stats.map(c=>(
+            <div key={c.label} style={{background:"rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",backdropFilter:"blur(8px)"}}>
+              <div style={{fontSize:22,marginBottom:4}}>{c.icon}</div>
+              <div style={{fontSize:24,fontWeight:800,color:"#fff"}}>{c.value}</div>
+              <div style={{fontSize:12,opacity:0.7}}>{c.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{padding:"16px 14px"}}>
+        <div style={{background:cardBg,borderRadius:16,padding:16,boxShadow:"0 2px 12px rgba(0,0,0,0.06)",marginBottom:16}}>
+          <h3 style={{margin:"0 0 12px",fontSize:15,fontWeight:800,color:dark?"#e0e0e0":"#0d1117"}}>🎯 Your Investment Focus</h3>
+          <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
+            {(me.industries||[]).map(ind=>(
+              <span key={ind} style={{background:"#f0f5ff",color:"#1a6cf5",borderRadius:20,padding:"5px 12px",fontSize:12,fontWeight:700}}>{ICONS[ind]} {ind}</span>
+            ))}
+            {(!me.industries||me.industries.length===0)&&<p style={{color:dark?"#555":"#bbb",fontSize:13,margin:0}}>No industries set — edit your profile.</p>}
+          </div>
+        </div>
+
+        {followedStartups.length>0&&(
+          <>
+            <h3 style={{...S.secT,color:dark?"#e0e0e0":"#0d1117",marginBottom:12}}>⭐ Startups You Follow</h3>
+            {followedStartups.map(s=>(
+              <div key={s.id} style={{background:cardBg,borderRadius:14,padding:"14px 16px",marginBottom:10,boxShadow:"0 1px 8px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",gap:12}}>
+                <Av src={s.avatar_url} name={s.name} size={44}/>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontWeight:700,fontSize:14,color:dark?"#e0e0e0":"#0d1117"}}>{s.name}</div>
+                  <div style={{color:"#1a6cf5",fontSize:12}}>{ICONS[s.industry]} {s.industry}</div>
+                  {s.raise_goal>0&&<div style={{marginTop:6}}><FundraisingBar raised={s.raise_raised||0} goal={s.raise_goal} dark={dark}/></div>}
+                </div>
+                <button style={S.smBtn} onClick={()=>{setChatTarget(s);setScreen("chat");}}>💬</button>
+              </div>
+            ))}
+          </>
+        )}
+
+        <h3 style={{...S.secT,color:dark?"#e0e0e0":"#0d1117",marginBottom:12,marginTop:8}}>🔥 Trending Startups</h3>
+        {trending.map((s,i)=>(
+          <div key={s.id} style={{background:cardBg,borderRadius:14,padding:"14px 16px",marginBottom:10,boxShadow:"0 1px 8px rgba(0,0,0,0.06)",display:"flex",alignItems:"center",gap:12}}>
+            <div style={{width:28,height:28,borderRadius:8,background:i===0?"#ffd700":i===1?"#c0c0c0":i===2?"#cd7f32":"#f0f5ff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,color:i<3?"#fff":"#1a6cf5",flexShrink:0}}>#{i+1}</div>
+            <Av src={s.avatar_url} name={s.name} size={40}/>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:13,color:dark?"#e0e0e0":"#0d1117"}}>{s.pitch_title||s.name}</div>
+              <div style={{color:dark?"#888":"#aaa",fontSize:11}}>{ICONS[s.industry]} {s.industry} · 👁 {s.views||0} views</div>
+            </div>
+            <button style={S.smBtn} onClick={()=>{setChatTarget(s);setScreen("chat");}}>💬</button>
+          </div>
+        ))}
       </div>
     </div>
   );
