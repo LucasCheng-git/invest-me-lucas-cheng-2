@@ -291,7 +291,7 @@ function Shell({me,setMe,screen,setScreen,logout,watchTarget,setWatchTarget,chat
         {screen==="feed"&&(loadingUsers?<Spinner/>:<Feed me={me} displayS={displayS} filterInd={filterInd} setFilterInd={setFilterInd} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} notify={notify} dark={dark}/>)}
         {screen==="profile"&&<Profile me={me} setMe={setMe} setWatchTarget={setWatchTarget} setScreen={setScreen} setChatTarget={setChatTarget} allUsers={allUsers} notify={notify}/>}
         {screen==="messages"&&<Inbox peers={peers()} me={me} messages={messages} setChatTarget={setChatTarget} setScreen={setScreen} allUsers={allUsers}/>}
-        {screen==="chat"&&chatTarget&&<Chat me={me} peer={chatTarget} convo={getConvo(me.id,chatTarget.id)} sendMsg={sendMsg} setScreen={setScreen}/>}
+        {screen==="chat"&&chatTarget&&me&&<Chat me={me} peer={chatTarget} convo={getConvo(me.id,chatTarget.id)||[]} sendMsg={sendMsg} setScreen={setScreen} dark={dark}/>}
         {screen==="watch"&&watchTarget&&<Watch startup={watchTarget} me={me} setChatTarget={setChatTarget} setScreen={setScreen}/>}
         {screen==="community"&&<Community me={me} allUsers={allUsers} notify={notify}/>}
         {screen==="news"&&<NewsPage/>}
@@ -490,16 +490,17 @@ function Inbox({peers,me,messages,setChatTarget,setScreen,allUsers}) {
   );
 }
 
-function Chat({me,peer,convo,sendMsg,setScreen}) {
+function Chat({me,peer,convo,sendMsg,setScreen,dark=false}) {
   const [text,setText]=useState("");const [sending,setSending]=useState(false);const btm=useRef();
   useEffect(()=>{btm.current?.scrollIntoView({behavior:"smooth"});},[convo]);
   async function send(){if(!text.trim()||sending)return;setSending(true);await sendMsg(peer.id,text.trim());setText("");setSending(false);}
+  if(!peer) return <div style={{padding:40,textAlign:"center",color:"#aaa"}}>Loading chat…</div>;
   return (
     <div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 62px)"}}>
       <div style={{display:"flex",alignItems:"center",padding:"12px 16px",borderBottom:"1px solid #f0f0f0",background:"#fff"}}><button style={S.back} onClick={()=>setScreen("messages")}>←</button><Av src={peer.avatar_url} name={peer.name} size={38}/><div style={{marginLeft:10}}><div style={{fontWeight:700}}>{peer.name}</div><div style={{fontSize:12,color:"#aaa"}}>{peer.role==="startup"?peer.industry:peer.firm}</div></div></div>
       <div style={{flex:1,overflowY:"auto",padding:16,background:"#fafafa"}}>
         {convo.length===0&&<p style={{textAlign:"center",color:"#ccc",paddingTop:40}}>Say hello! 👋</p>}
-        {convo.map(msg=>{const isMe=msg.from_id===me.id;return(<div key={msg.id} style={{display:"flex",justifyContent:isMe?"flex-end":"flex-start",marginBottom:10}}><div style={{maxWidth:"75%",padding:"10px 14px",borderRadius:18,...(isMe?{background:"#1a6cf5",color:"#fff",borderBottomRightRadius:4}:{background:"#fff",color:"#0d1117",boxShadow:"0 1px 6px rgba(0,0,0,0.07)",borderBottomLeftRadius:4})}}><p style={{margin:0,lineHeight:1.5,fontSize:14}}>{msg.text}</p><span style={{fontSize:10,opacity:0.6,display:"block",textAlign:"right",marginTop:4}}>{timeAgo(msg.created_at)}</span></div></div>);})}
+        {(convo||[]).map(msg=>{const isMe=msg.from_id===me.id;return(<div key={msg.id} style={{display:"flex",justifyContent:isMe?"flex-end":"flex-start",marginBottom:10}}><div style={{maxWidth:"75%",padding:"10px 14px",borderRadius:18,...(isMe?{background:"#1a6cf5",color:"#fff",borderBottomRightRadius:4}:{background:"#fff",color:"#0d1117",boxShadow:"0 1px 6px rgba(0,0,0,0.07)",borderBottomLeftRadius:4})}}><p style={{margin:0,lineHeight:1.5,fontSize:14}}>{msg.text}</p><span style={{fontSize:10,opacity:0.6,display:"block",textAlign:"right",marginTop:4}}>{timeAgo(msg.created_at)}</span></div></div>);})}
         <div ref={btm}/>
       </div>
       <div style={{display:"flex",gap:10,padding:"12px 16px",background:dark?"#161b22":"#fff",borderTop:"1px solid "+(dark?"#21262d":"#f0f0f0")}}>
